@@ -62,7 +62,14 @@ h1 { font-size: 1.45rem; line-height: 1.3; margin: 0 0 0.25rem; }
 .tabs button[aria-pressed="true"] {
   background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: bold;
 }
-button:focus-visible, input:focus-visible, summary:focus-visible {
+a.home {
+  display: inline-block; position: sticky; top: 0.75rem; z-index: 5;
+  margin: 0 0 1rem; padding: 0.45rem 0.95rem; border-radius: 0.5rem;
+  border: 2px solid var(--accent); background: var(--accent); color: var(--accent-ink);
+  font-weight: bold; font-size: 0.95rem; text-decoration: none;
+  box-shadow: 0 0 0 0.45rem var(--bg);
+}
+button:focus-visible, input:focus-visible, summary:focus-visible, a.home:focus-visible {
   outline: 3px solid var(--focus); outline-offset: 2px;
 }
 .progress { display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--muted); margin-bottom: 0.4rem; }
@@ -117,6 +124,7 @@ th, td { text-align: left; padding: 0.35rem 0.6rem; border-bottom: 1px solid var
 </head>
 <body>
 <main>
+  <a class="home" href="../index.html">Home</a>
   <h1>Week 1 Recall Quiz: Information Security Foundations</h1>
   <p class="sub">7CCSMCIS Cryptography. Type the missing term. Case, spaces and hyphens are ignored; spelling must be exact.</p>
 
