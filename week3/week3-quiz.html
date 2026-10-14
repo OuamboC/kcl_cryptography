@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 3 Quiz: Historical Ciphers and Steganography</title>
+<style>
+  :root {
+    --bg: #fbf7ee; --card: #ffffff; --text: #1f2933; --muted: #52606d;
+    --accent: #1d4ed8; --good: #15803d; --bad: #b91c1c; --border: #d9d2c0;
+    --easy: #15803d; --medium: #b45309; --hard: #b91c1c; --src-bg: #eef2ff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14181f; --card: #1e242d; --text: #eef1f5; --muted: #a8b3c0;
+      --accent: #7aa2ff; --good: #4ade80; --bad: #f87171; --border: #364050;
+      --easy: #4ade80; --medium: #fbbf24; --hard: #f87171; --src-bg: #232c40;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); }
+  body {
+    font-family: "OpenDyslexic", "Lexend", "Verdana", "Trebuchet MS", sans-serif;
+    font-size: 19px; line-height: 1.7; letter-spacing: 0.03em; padding: 20px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; margin: 0 0 4px; }
+  .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 18px; }
+  .card { background: var(--card); border: 2px solid var(--border); border-radius: 14px; padding: 22px; margin-bottom: 16px; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  button {
+    font: inherit; font-size: 0.95rem; padding: 10px 16px; border-radius: 10px;
+    border: 2px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer;
+  }
+  button:hover { background: var(--accent); color: var(--bg); }
+  button.primary { background: var(--accent); color: var(--bg); }
+  button:disabled { opacity: 0.4; cursor: not-allowed; }
+  .tier-btn.active { background: var(--accent); color: var(--bg); }
+  .badge { display: inline-block; padding: 2px 12px; border-radius: 20px; font-size: 0.8rem; font-weight: bold; border: 2px solid currentColor; }
+  .badge.Easy { color: var(--easy); } .badge.Medium { color: var(--medium); } .badge.Hard { color: var(--hard); }
+  .progress { color: var(--muted); font-size: 0.85rem; }
+  .qtext { font-size: 1.15rem; margin: 14px 0 8px; font-weight: bold; }
+  .source { background: var(--src-bg); border-left: 5px solid var(--accent); padding: 6px 12px; font-size: 0.8rem; color: var(--muted); border-radius: 6px; margin-bottom: 16px; }
+  input[type="text"] {
+    width: 100%; font: inherit; font-size: 1.1rem; padding: 12px; border-radius: 10px;
+    border: 2px solid var(--border); background: var(--bg); color: var(--text); margin-bottom: 12px;
+  }
+  input[type="text"]:focus { outline: 3px solid var(--accent); }
+  input.correct { border-color: var(--good); } input.wrong { border-color: var(--bad); }
+  .feedback { min-height: 1.6em; margin: 6px 0 14px; font-weight: bold; }
+  .feedback.good { color: var(--good); } .feedback.bad { color: var(--bad); }
+  .score { font-size: 2rem; font-weight: bold; }
+  label.opt { font-size: 0.85rem; color: var(--muted); display: flex; gap: 8px; align-items: center; }
+  .hidden { display: none; }
+  ul { padding-left: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Week 3 Active Recall: Historical Ciphers and Steganography</h1>
+  <div class="sub">7CCSMCIS Cryptography | Lectures 3.1, 3.2 and SGT 3 | Type the exact term. Case and spacing are ignored, spelling is not.</div>
+
+  <div class="card" id="setup">
+    <div class="row" style="margin-bottom:12px;">
+      <button class="tier-btn active" data-tier="All">All</button>
+      <button class="tier-btn" data-tier="Easy">Easy</button>
+      <button class="tier-btn" data-tier="Medium">Medium</button>
+      <button class="tier-btn" data-tier="Hard">Hard</button>
+    </div>
+    <div class="row">
+      <label class="opt"><input type="checkbox" id="shuffleBox"> Shuffle order</label>
+      <button class="primary" id="startBtn">Start quiz</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="quiz">
+    <div class="row" style="justify-content:space-between;">
+      <span class="badge" id="tierBadge"></span>
+      <span class="progress" id="progress"></span>
+    </div>
+    <div class="qtext" id="qText"></div>
+    <div class="source" id="qSource"></div>
+    <input type="text" id="answerBox" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Type your answer, then press Enter">
+    <div class="feedback" id="feedback"></div>
+    <div class="row">
+      <button class="primary" id="checkBtn">Check</button>
+      <button id="revealBtn">Show answer</button>
+      <button id="nextBtn" disabled>Next</button>
+    </div>
+  </div>
+
+  <div class="card hidden" id="results">
+    <div class="score" id="scoreText"></div>
+    <div id="tierBreakdown" style="margin:10px 0;"></div>
+    <div class="row">
+      <button class="primary" id="retryMissedBtn">Retry missed only</button>
+      <button id="restartBtn">Back to start</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const QUESTIONS = [
+  // ---------- EASY ----------
+  { id: 1, tier: "Easy", q: "The Caesar cipher key k is a number between 0 and _____ (inclusive).", a: ["25"], source: "Lecture 3.1, Slide 3 (Historical Ciphers: The Caesar Cipher)" },
+  { id: 2, tier: "Easy", q: "Caesar encryption is C = (P + K) mod _____.", a: ["26"], source: "Lecture 3.1, Slide 7 (Caesar Cipher)" },
+  { id: 3, tier: "Easy", q: "Caesar decryption works by shifting letters _____ by k.", a: ["backward", "backwards"], source: "Lecture 3.1, Slide 3 (Historical Ciphers: The Caesar Cipher)" },
+  { id: 4, tier: "Easy", q: "In English, the letter that occurs most frequently is _____.", a: ["e"], source: "Lecture 3.1, Slide 5 (Caesar Cipher Security?)" },
+  { id: 5, tier: "Easy", q: "The scytale from ancient Greece is a _____ cipher.", a: ["transposition"], source: "Lecture 3.1, Slide 30 (Historical Ciphers: Transposition Cipher)" },
+  { id: 6, tier: "Easy", q: "The Playfair cipher uses a 5 x 5 matrix of letters built from a _____.", a: ["keyword"], source: "Lecture 3.1, Slide 17 (Playfair Cipher)" },
+  { id: 7, tier: "Easy", q: "The Vigenere cipher is a _____ substitution cipher.", a: ["polyalphabetic", "poly-alphabetic"], source: "Lecture 3.1, Slide 20 (Polyalphabetic Substitution Ciphers)" },
+  { id: 8, tier: "Easy", q: "In steganography, the message to be sent is called the _____.", a: ["hiddentext", "hidden text"], source: "Lecture 3.2, Slide 23 (Formalising Steganography: Terminology)" },
+  { id: 9, tier: "Easy", q: "The object in which the hiddentext is embedded is called the _____.", a: ["covertext", "cover text"], source: "Lecture 3.2, Slide 23 (Formalising Steganography: Terminology)" },
+  { id: 10, tier: "Easy", q: "The covertext after the hiddentext has been embedded is called the _____.", a: ["stegotext", "stego text"], source: "Lecture 3.2, Slide 23 (Formalising Steganography: Terminology)" },
+  { id: 11, tier: "Easy", q: "The adversary who monitors the channel in steganography is called the _____.", a: ["warden"], source: "Lecture 3.2, Slide 23 (Formalising Steganography: Terminology)" },
+  { id: 12, tier: "Easy", q: "Steganography tries to hide the very _____ of a secret message.", a: ["existence"], source: "Lecture 3.2, Slide 4 (Separating Encryption and Steganography)" },
+  { id: 13, tier: "Easy", q: "LSB stands for Least Significant _____.", a: ["bit"], source: "Lecture 3.2, Slide 31 (Least Significant Bit (LSB) method for Image Based Stego)" },
+
+  // ---------- MEDIUM ----------
+  { id: 14, tier: "Medium", q: "A mono-alphabetic substitution cipher over 26 letters has _____ possible keys (write it as a factorial).", a: ["26!", "26 factorial"], source: "Lecture 3.1, Slide 9 (Keyspace of Monoalphabetic Substitution Ciphers)" },
+  { id: 15, tier: "Medium", q: "Playfair works on digrams, so the number of possible digrams is 26 x 26 = _____.", a: ["676"], source: "Lecture 3.1, Slide 19 (Playfair cipher: Security)" },
+  { id: 16, tier: "Medium", q: "Kasiski's method (1863) is a statistical method to determine the passphrase _____ of a Vigenere cipher.", a: ["length", "key length", "passphrase length", "keyword length"], source: "Lecture 3.1, Slide 25 (Breaking the Vigenere Cipher)" },
+  { id: 17, tier: "Medium", q: "Vigenere encryption is Ci = (Pi + K(i mod M)) mod _____.", a: ["26"], source: "Lecture 3.1, Slide 21 (Vigenere Cipher)" },
+  { id: 18, tier: "Medium", q: "A cipher that gives multiple substitutes for a single letter to hinder frequency analysis is a _____ substitution cipher.", a: ["homophonic"], source: "Lecture 3.1, Slide 15 (Homophonic Substitution Ciphers)" },
+  { id: 19, tier: "Medium", q: "The cost of a homophonic substitution cipher is data _____ and more work for decryption.", a: ["expansion"], source: "Lecture 3.1, Slide 15 (Homophonic Substitution Ciphers)" },
+  { id: 20, tier: "Medium", q: "Playfair was invented in 1854 by Sir Charles _____.", a: ["wheatstone"], source: "Lecture 3.1, Slide 19 (Playfair cipher: Security)" },
+  { id: 21, tier: "Medium", q: "The idea of polyalphabetic substitution is credited to L.B. _____.", a: ["alberti"], source: "Lecture 3.1, Slide 20 (Polyalphabetic Substitution Ciphers)" },
+  { id: 22, tier: "Medium", q: "The Rail Fence cipher is a transposition cipher similar to the Greek _____.", a: ["scytale"], source: "Lecture 3.1, Slide 33 (Rail Fence Cipher)" },
+  { id: 23, tier: "Medium", q: "Product ciphers chain combinations of substitutions and _____.", a: ["transpositions", "transposition"], source: "Lecture 3.1, Slide 36 (Composite Ciphers)" },
+  { id: 24, tier: "Medium", q: "In a product cipher, S-Boxes _____ the input bits.", a: ["confuse"], source: "Lecture 3.1, Slide 36 (Composite Ciphers)" },
+  { id: 25, tier: "Medium", q: "In a product cipher, P-Boxes _____ bits across S-box inputs.", a: ["diffuse"], source: "Lecture 3.1, Slide 36 (Composite Ciphers)" },
+  { id: 26, tier: "Medium", q: "A stegosystem is a triple of efficient algorithms (KeyGen, Hide, _____).", a: ["reveal"], source: "Lecture 3.2, Slide 25 (Formal Syntax of a Stegosystem)" },
+  { id: 27, tier: "Medium", q: "The three important features of a stegosystem are capacity, security and _____.", a: ["robustness"], source: "Lecture 3.2, Slide 27 (Stegosystems - Important features)" },
+  { id: 28, tier: "Medium", q: "In the passive threat model the Warden can only _____ from the channel (interception).", a: ["read"], source: "Lecture 3.2, Slide 23 (Formalising Steganography: Terminology)" },
+  { id: 29, tier: "Medium", q: "In the active threat model the Warden has full _____ over the channel.", a: ["control"], source: "Lecture 3.2, Slide 23 (Formalising Steganography: Terminology)" },
+  { id: 30, tier: "Medium", q: "A microdot is text or an image substantially reduced in _____ to prevent detection.", a: ["size"], source: "Lecture 3.2, Slide 18 (Real World Examples of Steganography)" },
+  { id: 31, tier: "Medium", q: "In a Playfair pair, if both letters fall in the same row, each is replaced by the letter to the _____.", a: ["right"], source: "Lecture 3.1, Slide 18 (Playfair Cipher Encryption)" },
+  { id: 32, tier: "Medium", q: "In a Playfair pair, if both letters fall in the same column, each is replaced by the letter _____ it.", a: ["below"], source: "Lecture 3.1, Slide 18 (Playfair Cipher Encryption)" },
+
+  // ---------- HARD ----------
+  { id: 33, tier: "Hard", q: "A substitution cipher over N-bit strings has (_____)! possible keys. Write the blank as an expression in N using ^ for powers.", a: ["2^n", "2**n"], source: "Lecture 3.1, Slide 29 (Defining Substitution Ciphers)" },
+  { id: 34, tier: "Hard", q: "A substitution cipher whose permutation is chosen uniformly at random achieves _____ secrecy.", a: ["perfect"], source: "Lecture 3.1, Slide 28 (Substitution Cipher Security)" },
+  { id: 35, tier: "Hard", q: "Perfect secrecy means Pr(P = p | C = c) = _____. (Write it as Pr(P=p))", a: ["pr(p=p)", "pr(p = p)", "pr(p)"], source: "Lecture 3.1, Slide 28 (Substitution Cipher Security)" },
+  { id: 36, tier: "Hard", q: "The Vigenere key space has size 26^t, where t is the length of the _____.", a: ["passphrase", "keyword", "key"], source: "Lecture 3.1, Slide 24 (Vigenere Cipher Security?)" },
+  { id: 37, tier: "Hard", q: "Stegosystem correctness requires Reveal(K, Hide(K, C, H)) = _____.", a: ["h"], source: "Lecture 3.2, Slide 25 (Formal Syntax of a Stegosystem)" },
+  { id: 38, tier: "Hard", q: "The steganography security advantage is Adv = 2 x |Pr[b' = b] - _____|. (Write the fraction as 1/2)", a: ["1/2"], source: "Lecture 3.2, Slides 41-42 (Building a definition of security for steganography)" },
+  { id: 39, tier: "Hard", q: "A stegosystem is secure if the adversary's advantage is _____ in the security parameter.", a: ["negligible"], source: "Lecture 3.2, Slide 41 (Building a definition of security for steganography)" },
+  { id: 40, tier: "Hard", q: "In the formal definition, a channel is a distribution on bit sequences where each bit has a timestamp with monotonically _____ time value.", a: ["increasing"], source: "Lecture 3.2, Slide 39 (Defining a channel)" },
+  { id: 41, tier: "Hard", q: "If the adversary chooses the covertext, stegotexts are trivially detected by comparing them to the _____ covertext.", a: ["original"], source: "Lecture 3.2, Slide 38 (Formalising Security of Steganography)" },
+  { id: 42, tier: "Hard", q: "LSB covertexts should have high variability, high contrast and few _____ regions.", a: ["uniform"], source: "Lecture 3.2, Slide 33 (The LSB Method II)" },
+  { id: 43, tier: "Hard", q: "If the covertext is _____, hiddentext embedding is detectable.", a: ["deterministic"], source: "Lecture 3.2, Slide 33 (The LSB Method II)" },
+  { id: 44, tier: "Hard", q: "Doubling every letter (C = 2P mod 26) fails as a cipher because decryption is not _____ (two plaintexts give the same ciphertext).", a: ["unique", "injective", "one-to-one", "one to one"], source: "SGT Week 3, Problem 4 (Violating Encryption Properties)" }
+];
+
+const $ = (id) => document.getElementById(id);
+let chosenTier = "All";
+let pool = [];
+let idx = 0;
+let answered = false;
+let results = {};   // id -> true/false
+
+function normalise(s) {
+  return s.toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+function startQuiz(list) {
+  pool = list;
+  idx = 0;
+  results = {};
+  $("setup").classList.add("hidden");
+  $("results").classList.add("hidden");
+  $("quiz").classList.remove("hidden");
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = pool[idx];
+  answered = false;
+  $("tierBadge").textContent = q.tier;
+  $("tierBadge").className = "badge " + q.tier;
+  $("progress").textContent = "Question " + (idx + 1) + " of " + pool.length;
+  $("qText").textContent = q.q;
+  $("qSource").textContent = "Source: " + q.source;
+  const box = $("answerBox");
+  box.value = "";
+  box.className = "";
+  box.disabled = false;
+  $("feedback").textContent = "";
+  $("feedback").className = "feedback";
+  $("checkBtn").disabled = false;
+  $("revealBtn").disabled = false;
+  $("nextBtn").disabled = true;
+  $("nextBtn").textContent = (idx === pool.length - 1) ? "Finish" : "Next";
+  box.focus();
+}
+
+function lockQuestion() {
+  answered = true;
+  $("answerBox").disabled = true;
+  $("checkBtn").disabled = true;
+  $("revealBtn").disabled = true;
+  $("nextBtn").disabled = false;
+  $("nextBtn").focus();
+}
+
+function checkAnswer() {
+  if (answered) return;
+  const q = pool[idx];
+  const typed = normalise($("answerBox").value);
+  if (typed === "") {
+    $("feedback").textContent = "Type something first.";
+    $("feedback").className = "feedback bad";
+    return;
+  }
+  const ok = q.a.some(function (x) { return normalise(x) === typed; });
+  results[q.id] = ok;
+  if (ok) {
+    $("answerBox").className = "correct";
+    $("feedback").textContent = "Correct.";
+    $("feedback").className = "feedback good";
+  } else {
+    $("answerBox").className = "wrong";
+    $("feedback").textContent = "Not quite. Answer: " + q.a[0];
+    $("feedback").className = "feedback bad";
+  }
+  lockQuestion();
+}
+
+function revealAnswer() {
+  if (answered) return;
+  const q = pool[idx];
+  results[q.id] = false;
+  $("answerBox").className = "wrong";
+  $("feedback").textContent = "Answer: " + q.a[0];
+  $("feedback").className = "feedback bad";
+  lockQuestion();
+}
+
+function nextQuestion() {
+  if (!answered) return;
+  if (idx < pool.length - 1) {
+    idx++;
+    renderQuestion();
+  } else {
+    showResults();
+  }
+}
+
+function showResults() {
+  $("quiz").classList.add("hidden");
+  $("results").classList.remove("hidden");
+  let right = 0;
+  const tiers = { Easy: [0, 0], Medium: [0, 0], Hard: [0, 0] };
+  pool.forEach(function (q) {
+    tiers[q.tier][1]++;
+    if (results[q.id]) { right++; tiers[q.tier][0]++; }
+  });
+  $("scoreText").textContent = "Score: " + right + " / " + pool.length;
+  const parts = [];
+  ["Easy", "Medium", "Hard"].forEach(function (t) {
+    if (tiers[t][1] > 0) parts.push(t + ": " + tiers[t][0] + " / " + tiers[t][1]);
+  });
+  $("tierBreakdown").textContent = parts.join("   |   ");
+  const missed = pool.filter(function (q) { return !results[q.id]; });
+  $("retryMissedBtn").disabled = missed.length === 0;
+}
+
+function currentList() {
+  let list = QUESTIONS.filter(function (q) { return chosenTier === "All" || q.tier === chosenTier; });
+  if ($("shuffleBox").checked) list = shuffleArray(list);
+  return list;
+}
+
+document.querySelectorAll(".tier-btn").forEach(function (b) {
+  b.addEventListener("click", function () {
+    document.querySelectorAll(".tier-btn").forEach(function (x) { x.classList.remove("active"); });
+    b.classList.add("active");
+    chosenTier = b.getAttribute("data-tier");
+  });
+});
+
+$("startBtn").addEventListener("click", function () { startQuiz(currentList()); });
+$("checkBtn").addEventListener("click", checkAnswer);
+$("revealBtn").addEventListener("click", revealAnswer);
+$("nextBtn").addEventListener("click", nextQuestion);
+$("retryMissedBtn").addEventListener("click", function () {
+  const missed = pool.filter(function (q) { return !results[q.id]; });
+  if (missed.length > 0) startQuiz($("shuffleBox").checked ? shuffleArray(missed) : missed);
+});
+$("restartBtn").addEventListener("click", function () {
+  $("results").classList.add("hidden");
+  $("quiz").classList.add("hidden");
+  $("setup").classList.remove("hidden");
+});
+$("answerBox").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    if (answered) nextQuestion(); else checkAnswer();
+  }
+});
+</script>
+</body>
+</html>

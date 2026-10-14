@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Week 3 Cipher Lab</title>
+<style>
+  :root { --bg:#fbf7ee; --card:#fff; --text:#1f2933; --muted:#52606d; --accent:#1d4ed8; --good:#15803d; --bad:#b91c1c; --border:#d9d2c0; --code:#f3efe3; --hl:#fde68a; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#14181f; --card:#1e242d; --text:#eef1f5; --muted:#a8b3c0; --accent:#7aa2ff; --good:#4ade80; --bad:#f87171; --border:#364050; --code:#11151b; --hl:#5b4a12; } }
+  * { box-sizing: border-box; }
+  html,body { margin:0; background:var(--bg); color:var(--text); }
+  body { font-family:"OpenDyslexic","Lexend","Verdana","Trebuchet MS",sans-serif; font-size:18px; line-height:1.7; letter-spacing:.03em; padding:18px; }
+  .wrap { max-width:960px; margin:0 auto; }
+  h1 { font-size:1.45rem; margin:0 0 4px; } h2 { font-size:1.2rem; margin:0 0 8px; } h3 { font-size:1.05rem; margin:14px 0 6px; }
+  .sub { color:var(--muted); font-size:.9rem; margin-bottom:14px; }
+  .tabs { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  button { font:inherit; font-size:.9rem; padding:9px 14px; border-radius:10px; border:2px solid var(--accent); background:transparent; color:var(--accent); cursor:pointer; }
+  button:hover,button.on { background:var(--accent); color:var(--bg); }
+  .tab { display:none; } .tab.show { display:block; }
+  .card { background:var(--card); border:2px solid var(--border); border-radius:14px; padding:18px; margin-bottom:16px; }
+  .tag { display:inline-block; padding:1px 10px; border-radius:20px; font-size:.75rem; font-weight:bold; border:2px solid currentColor; margin-right:6px; }
+  .Easy{color:var(--good)} .Medium{color:#b45309} .Hard{color:var(--bad)} .Bonus{color:var(--accent)}
+  input[type=text],input[type=number],textarea,select { font:inherit; font-size:1rem; padding:8px 10px; border-radius:8px; border:2px solid var(--border); background:var(--bg); color:var(--text); max-width:100%; }
+  textarea { width:100%; min-height:70px; } input:focus,textarea:focus { outline:3px solid var(--accent); }
+  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:8px 0; }
+  label { font-size:.85rem; color:var(--muted); }
+  .res { font-weight:bold; margin-left:6px; } .res.good{color:var(--good)} .res.bad{color:var(--bad)}
+  pre { background:var(--code); border:1px solid var(--border); border-radius:10px; padding:12px; overflow-x:auto; font-family:Consolas,Menlo,monospace; font-size:.8rem; line-height:1.5; letter-spacing:0; position:relative; margin:8px 0; }
+  .out { background:var(--code); border-radius:10px; padding:10px; margin-top:8px; font-family:Consolas,Menlo,monospace; font-size:.85rem; line-height:1.5; letter-spacing:0; overflow-x:auto; white-space:pre-wrap; word-break:break-all; }
+  .copy { position:absolute; top:6px; right:6px; font-size:.7rem; padding:3px 8px; }
+  details { margin:8px 0; } summary { cursor:pointer; color:var(--accent); font-weight:bold; }
+  table { border-collapse:collapse; margin:6px 0; } td,th { border:1px solid var(--border); padding:3px 9px; text-align:center; font-family:Consolas,Menlo,monospace; font-size:.85rem; letter-spacing:0; }
+  td.l { text-align:left; } td.hl { background:var(--hl); }
+  .bar { height:11px; background:var(--accent); border-radius:3px; min-width:1px; } .bar.e { background:#b45309; }
+  .note { background:var(--hl); border-radius:8px; padding:8px 12px; font-size:.9rem; margin:8px 0; }
+  ol li,ul li { margin-bottom:4px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Week 3 Cipher Lab</h1>
+<div class="sub">7CCSMCIS Cryptography | Do the working on paper first, then use this page to check, explore and code.</div>
+<div class="tabs">
+  <button class="tabbtn on" data-tab="ex">1. Exercises</button>
+  <button class="tabbtn" data-tab="tools">2. Cipher Tools</button>
+  <button class="tabbtn" data-tab="calc">3. Calculators</button>
+  <button class="tabbtn" data-tab="code">4. Code to Learn</button>
+  <button class="tabbtn" data-tab="proj">5. Mini Project</button>
+</div>
+
+<!-- ================= TAB 1 EXERCISES ================= -->
+<div class="tab show" id="tab-ex">
+  <div class="card">
+    <h2>Weekly Exercise Toolbox (from your notes)</h2>
+    <p>Work each one in your notebook, type your answer, press Check. Worked solutions are folded away: try first.</p>
+  </div>
+
+  <div class="card">
+    <span class="tag Easy">Easy</span><b>Caesar by hand</b>
+    <p>Encrypt <b>CRYPTO</b> with k = 7 using C = (P + K) mod 26. Then decrypt it to check.</p>
+    <div class="row"><input type="text" id="e1" placeholder="ciphertext"><button onclick="chk('e1','e1r',['JYFWAV'])">Check</button><span id="e1r" class="res"></span></div>
+    <details><summary>Worked solution</summary><div class="out">C=2 -> 2+7=9  -> J
+R=17 -> 17+7=24 -> Y
+Y=24 -> 24+7=31 -> 31-26=5 -> F
+P=15 -> 15+7=22 -> W
+T=19 -> 19+7=26 -> 0 -> A
+O=14 -> 14+7=21 -> V
+Answer: JYFWAV
+Decrypt check: J=9 -> 9-7=2 -> C ... and so on.</div></details>
+  </div>
+
+  <div class="card">
+    <span class="tag Medium">Medium</span><b>Vigenere and LSB</b>
+    <p>1. Encrypt <b>HIDDEN</b> with key <b>KEY</b> (K=10, E=4, Y=24).</p>
+    <div class="row"><input type="text" id="m1" placeholder="ciphertext"><button onclick="chk('m1','m1r',['RMBNIL'])">Check</button><span id="m1r" class="res"></span></div>
+    <p>2. Key space size for a 3-letter keyword (26^t)?</p>
+    <div class="row"><input type="text" id="m2" placeholder="number"><button onclick="chk('m2','m2r',['17576'],true)">Check</button><span id="m2r" class="res"></span></div>
+    <p>3. Embed bits 1,0,1,1 into the LSBs of pixels 186, 187, 52, 201. Give the new pixel values separated by commas.</p>
+    <div class="row"><input type="text" id="m3" placeholder="a,b,c,d"><button onclick="chk('m3','m3r',['187,186,53,201'])">Check</button><span id="m3r" class="res"></span></div>
+    <p>4. LSB capacity in <b>bits</b> of a 640 x 480 greyscale image at 1 bit per pixel?</p>
+    <div class="row"><input type="text" id="m4" placeholder="number"><button onclick="chk('m4','m4r',['307200'],true)">Check</button><span id="m4r" class="res"></span></div>
+    <details><summary>Worked solution</summary><div class="out">H=7+10=17 R | I=8+4=12 M | D=3+24=27-26=1 B | D=3+10=13 N | E=4+4=8 I | N=13+24=37-26=11 L
+HIDDEN -> RMBNIL
+26^3 = 17,576
+186 = 10111010 (LSB 0) -> set 1 -> 187
+187 = 10111011 (LSB 1) -> set 0 -> 186
+52  = 00110100 (LSB 0) -> set 1 -> 53
+201 = 11001001 (LSB 1) -> set 1 -> 201 (unchanged)
+640 x 480 = 307,200 bits = 38,400 bytes</div></details>
+  </div>
+
+  <div class="card">
+    <span class="tag Hard">Hard</span><b>Playfair, full pipeline</b>
+    <p>Keyword <b>KINGS</b> (I/J share a cell). Plaintext <b>KEEPHIDDEN</b>, filler X.</p>
+    <p>1. Build the matrix. 2. Split into digraphs (X breaks repeats, X pads the end). 3. Encrypt each digraph.</p>
+    <div class="row"><label>Digraphs (as one string, spaces ignored)</label><input type="text" id="h1" placeholder="XX XX XX"><button onclick="chk('h1','h1r',['KEEPHIDXDENX'])">Check</button><span id="h1r" class="res"></span></div>
+    <div class="row"><label>Ciphertext digraphs</label><input type="text" id="h2" placeholder="XX XX XX"><button onclick="chk('h2','h2r',['SAAUQBCYEACN'])">Check</button><span id="h2r" class="res"></span></div>
+    <details><summary>Worked solution</summary><div class="out">Matrix:   K I N G S
+          A B C D E
+          F H L M O
+          P Q R T U
+          V W X Y Z
+Digraphs: KE EP HI DX DE NX     (DD -> DX then DE ; N padded with X)
+KE rectangle -> SA       EP rectangle -> AU
+HI same column -> QB     DX rectangle -> CY
+DE same row -> EA        NX same column -> CN
+Ciphertext: SA AU QB CY EA CN</div></details>
+  </div>
+
+  <div class="card">
+    <span class="tag Bonus">Bonus A</span><b>Stego capacity (SGT Problem 9)</b>
+    <p>Song is 4:35 long, CD rate 44,100 samples per second. (a) Capacity in bits if only the first sample each second is used? (c) Capacity in bits if every sample hides one bit?</p>
+    <div class="row"><input type="text" id="b1" placeholder="(a)"><button onclick="chk('b1','b1r',['275'],true)">Check (a)</button><span id="b1r" class="res"></span></div>
+    <div class="row"><input type="text" id="b2" placeholder="(c)"><button onclick="chk('b2','b2r',['12127500'],true)">Check (c)</button><span id="b2r" class="res"></span></div>
+    <details><summary>Hint</summary>4:35 = 275 seconds. A 280-bit message does not fit in (a). Why is that a problem?</details>
+  </div>
+
+  <div class="card">
+    <span class="tag Bonus">Bonus B</span><b>Why multiplying by 2 fails (SGT Problem 4)</b>
+    <p>For C = (2 x P) mod 26, find two <b>different</b> plaintext numbers (0 to 25) that give the same ciphertext. Type them as a,b.</p>
+    <div class="row"><input type="text" id="b3" placeholder="a,b"><button onclick="chkPair()">Check</button><span id="b3r" class="res"></span></div>
+    <details><summary>Why it matters</summary>Two plaintexts share one ciphertext, so decryption is not unique. This breaks the <b>correctness</b> property of encryption. Use Calculators, tool 2, with a = 2 and m = 26.</details>
+  </div>
+
+  <div class="card">
+    <h2>Drill generator (infinite practice)</h2>
+    <div class="out" id="drillQ" style="font-size:1rem"></div>
+    <div class="row"><input type="text" id="drillA" placeholder="your answer"><button onclick="checkDrill()">Check</button><button onclick="newDrill()">New drill</button><span id="drillR" class="res"></span></div>
+  </div>
+
+  <div class="card">
+    <h2>Tutorial (SGT 3) problem to tool map</h2>
+    <table>
+      <tr><th>Problem</th><th>Use</th></tr>
+      <tr><td>1, 2, 3 Decrypting</td><td class="l">Cipher Tools 1 (Caesar, brute force) and 2 (Vigenere)</td></tr>
+      <tr><td>4 Multiply by 2</td><td class="l">Calculators 2 (modular arithmetic)</td></tr>
+      <tr><td>5 Formalising</td><td class="l">Calculators 1 (key space sizes)</td></tr>
+      <tr><td>6 Playfair</td><td class="l">Cipher Tools 3</td></tr>
+      <tr><td>7 Frequency analysis</td><td class="l">Cipher Tools 5 (load the sample)</td></tr>
+      <tr><td>8 Defining stego</td><td class="l">Mini Project tab, milestone 3</td></tr>
+      <tr><td>9, 10 LSB and determinism</td><td class="l">Calculators 3 and Mini Project demo</td></tr>
+    </table>
+    <div class="note">Do the problem on paper first. Tools are for checking, not replacing the working.</div>
+  </div>
+</div>
+
+<!-- ================= TAB 2 TOOLS ================= -->
+<div class="tab" id="tab-tools">
+  <div class="card"><h2>1. Caesar</h2>
+    <div class="row"><input type="text" id="t1_text" value="YES" placeholder="text"><label>key</label><input type="number" id="t1_key" value="3" min="0" max="25" style="width:80px">
+    <button onclick="t1('enc')">Encrypt</button><button onclick="t1('dec')">Decrypt</button><button onclick="t1('brute')">Brute force all 26</button></div>
+    <div class="out" id="t1_out"></div></div>
+
+  <div class="card"><h2>2. Vigenere (with number table)</h2>
+    <div class="row"><input type="text" id="t2_text" value="ATTACKATDAWN"><label>key</label><input type="text" id="t2_key" value="BEN" style="width:140px">
+    <button onclick="t2(1)">Encrypt</button><button onclick="t2(-1)">Decrypt</button></div>
+    <div class="out" id="t2_out"></div></div>
+
+  <div class="card"><h2>3. Playfair</h2>
+    <div class="row"><label>keyword</label><input type="text" id="t3_kw" value="MONARCHY" style="width:150px"><input type="text" id="t3_text" value="THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG" style="width:100%">
+    <button onclick="t3(1)">Encrypt</button><button onclick="t3(-1)">Decrypt (enter ciphertext)</button></div>
+    <div id="t3_out"></div></div>
+
+  <div class="card"><h2>4. Rail Fence</h2>
+    <div class="row"><input type="text" id="t4_text" value="WEAREDISCOVEREDFLEEATONCE"><label>depth</label><input type="number" id="t4_depth" value="3" min="2" max="10" style="width:80px">
+    <button onclick="t4(1)">Encrypt</button><button onclick="t4(-1)">Decrypt</button></div>
+    <div class="out" id="t4_out"></div>
+    <div class="note">The lecture slide shows 23 ciphertext letters for this depth-3 example, but the message has 25 letters. This tool gives the full 25-letter result.</div></div>
+
+  <div class="card"><h2>5. Frequency analysis (Caesar)</h2>
+    <textarea id="t5_text" placeholder="paste ciphertext"></textarea>
+    <div class="row"><button onclick="t5()">Analyse</button><button onclick="document.getElementById('t5_text').value='QBB JXU MEHBT YI Q IJQWU QDT QBB JXU CUD QDT MECUD CUHUBO FBQOUHI.';t5();">Load tutorial Problem 7 sample</button></div>
+    <div id="t5_out"></div></div>
+
+  <div class="card"><h2>6. Kasiski and automatic Vigenere break</h2>
+    <textarea id="t6_text" placeholder="paste a long Vigenere ciphertext (300+ letters works best)"></textarea>
+    <div class="row"><button onclick="t6()">Analyse</button><button onclick="loadT6()">Load sample (key unknown to you)</button><label>force key length</label><input type="number" id="t6_len" min="1" max="20" style="width:80px"></div>
+    <div id="t6_out"></div></div>
+
+  <div class="card"><h2>7. One-time pad and the two-time pad failure</h2>
+    <div class="row"><input type="text" id="t7_p1" value="ATTACKATDAWN"><input type="text" id="t7_p2" value="RETREATATDUSK"></div>
+    <div class="row"><button onclick="t7()">Encrypt both with the SAME random key</button></div>
+    <div class="out" id="t7_out"></div></div>
+
+  <div class="card"><h2>8. LSB embed and extract</h2>
+    <div class="row"><label>pixels</label><input type="text" id="t8_px" value="186,187,52,201" style="width:100%"></div>
+    <div class="row"><label>bits</label><input type="text" id="t8_bits" value="1011" style="width:200px"><button onclick="t8()">Embed</button></div>
+    <div id="t8_out"></div></div>
+</div>
+
+<!-- ================= TAB 3 CALCULATORS ================= -->
+<div class="tab" id="tab-calc">
+  <div class="card"><h2>1. Key space and brute-force time</h2>
+    <div class="row"><label>Vigenere key length t</label><input type="number" id="c1_t" value="5" min="1" max="60" style="width:80px">
+    <label>N bits</label><input type="number" id="c1_N" value="3" min="1" max="24" style="width:80px">
+    <label>guesses per second</label><input type="text" id="c1_rate" value="1e12" style="width:100px"><button onclick="c1()">Calculate</button></div>
+    <div id="c1_out"></div></div>
+
+  <div class="card"><h2>2. Modular arithmetic and invertibility</h2>
+    <div class="row"><label>a</label><input type="number" id="c2_a" value="2" style="width:90px"><label>b</label><input type="number" id="c2_b" value="30" style="width:90px"><label>m</label><input type="number" id="c2_m" value="26" min="2" style="width:90px"><button onclick="c2()">Calculate</button></div>
+    <div id="c2_out"></div></div>
+
+  <div class="card"><h2>3. Steganography capacity</h2>
+    <h3>Audio (LSB)</h3>
+    <div class="row"><label>min</label><input type="number" id="c3_min" value="4" style="width:70px"><label>sec</label><input type="number" id="c3_sec" value="35" style="width:70px">
+    <label>samples/s</label><input type="number" id="c3_sr" value="44100" style="width:100px"><label>samples used per second</label><input type="number" id="c3_use" value="1" style="width:80px"><label>message bits</label><input type="number" id="c3_msg" value="280" style="width:80px"></div>
+    <div class="row"><button onclick="c3()">Calculate</button></div><div id="c3_out"></div>
+    <h3>Image (LSB)</h3>
+    <div class="row"><label>width</label><input type="number" id="c3_w" value="640" style="width:90px"><label>height</label><input type="number" id="c3_h" value="480" style="width:90px"><button onclick="c3i()">Calculate</button></div><div id="c3i_out"></div>
+    <h3>Permutation stego (slide 36)</h3>
+    <div class="row"><label>n subpackets</label><input type="number" id="c3_n" value="4" min="2" max="30" style="width:80px"><button onclick="c3p()">Calculate</button></div><div id="c3p_out"></div>
+  </div>
+</div>
+
+<!-- ================= TAB 4 CODE ================= -->
+<div class="tab" id="tab-code">
+  <div class="card"><h2>Coding path</h2>
+    <p>Install Python 3, make a folder <b>week3</b>, save each snippet as its own file, run with <b>python3 file.py</b>. The <b>assert</b> lines are tests: silence means pass. Type the code by hand, do not paste, then change one thing and predict the result.</p>
+    <ol>
+      <li>Caesar, then brute force (Week 3.1 slides 3 to 4)</li>
+      <li>Vigenere (slides 21 to 23)</li>
+      <li>Playfair (slides 17 to 18)</li>
+      <li>Rail fence (slides 33 to 35)</li>
+      <li>Frequency analysis with chi-squared (slides 11 to 12, tutorial 7)</li>
+      <li>Kasiski and automatic break (slide 25)</li>
+      <li>LSB embedding (Week 3.2 slides 31 to 32)</li>
+      <li>One-time pad and key reuse (slide 26, Week 2 link)</li>
+    </ol>
+    <div class="note">Python ideas used: strings, loops, list comprehension, <b>%</b> (modulo), dictionaries, <b>&amp;</b> and <b>|</b> bit operations.</div>
+  </div>
+
+  <div class="card"><h3>1. Caesar and brute force</h3>
+    <p>Concept: C = (P + K) mod 26. Brute force works because there are only 26 keys.</p>
+<pre class="code">A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+def caesar_enc(text, k):
+    """C = (P + K) mod 26"""
+    return "".join(A[(A.index(c) + k) % 26] for c in text.upper() if c in A)
+
+def caesar_dec(text, k):
+    """P = (C - K) mod 26"""
+    return caesar_enc(text, -k)
+
+def brute_force(ciphertext):
+    """Try every key. Works because the key space is tiny."""
+    for k in range(26):
+        print(k, caesar_dec(ciphertext, k))
+
+# --- tests (silent if everything is correct) ---
+assert caesar_enc("YES", 3) == "BHV"
+assert caesar_enc("CRYPTO", 7) == "JYFWAV"
+assert caesar_enc("RIVER", 13) == "EVIRE"
+assert caesar_enc("RIVER", 39) == "EVIRE"          # 39 = 13 mod 26
+assert caesar_dec(caesar_enc("HELLO", 5), 5) == "HELLO"
+brute_force("EHQ")                                  # find the plaintext by eye</pre>
+    <p><b>Challenge:</b> brute force EHQ and read the plaintext. Then add a check that skips non-letters.</p></div>
+
+  <div class="card"><h3>2. Vigenere</h3>
+    <p>Concept: a different Caesar shift per position, cycling through the key with <b>i % len(key)</b>.</p>
+<pre class="code">A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+def vig(text, key, direction=1):
+    """direction = +1 encrypt, -1 decrypt.  Ci = (Pi + K[i mod M]) mod 26"""
+    text = [c for c in text.upper() if c in A]
+    key = [c for c in key.upper() if c in A]
+    return "".join(
+        A[(A.index(p) + direction * A.index(key[i % len(key)])) % 26]
+        for i, p in enumerate(text)
+    )
+
+def vig_enc(pt, key): return vig(pt, key, +1)
+def vig_dec(ct, key): return vig(ct, key, -1)
+
+# --- tests: examples taken from the lecture slides ---
+assert vig_enc("ATTACKATDAWN", "BEN") == "BXGBGXBXQBAA"
+assert vig_enc("WEAREDISCOVEREDSAVEYOURSELF", "DECEPTIVE") == "ZICVTWQNGRZGVTWAVZHCQYGLMGJ"
+assert vig_enc("HIDDEN", "KEY") == "RMBNIL"
+assert vig_dec("RMBNIL", "KEY") == "HIDDEN"
+print("Key space for a 3-letter key:", 26 ** 3)</pre>
+    <p><b>Challenge:</b> encrypt with a key that is one letter long. What cipher do you get?</p></div>
+
+  <div class="card"><h3>3. Playfair</h3>
+    <p>Concept: build a 5x5 grid, split into digraphs, apply row, column or rectangle rule.</p>
+<pre class="code">A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+def pf_matrix(keyword):
+    """5x5 grid: keyword letters (no duplicates) then the rest of the alphabet. I and J share a cell."""
+    seen = []
+    for c in (keyword.upper() + A).replace("J", "I"):
+        if c in A and c not in seen:
+            seen.append(c)
+    return [seen[i * 5:(i + 1) * 5] for i in range(5)]
+
+def pf_pos(m, ch):
+    for r in range(5):
+        for c in range(5):
+            if m[r][c] == ch:
+                return r, c
+
+def pf_digraphs(text, filler="X"):
+    """Split into pairs. A repeated pair gets a filler; pad the end if odd."""
+    t = [c for c in text.upper().replace("J", "I") if c in A]
+    pairs, i = [], 0
+    while i &lt; len(t):
+        a = t[i]
+        b = t[i + 1] if i + 1 &lt; len(t) else filler
+        if a == b:
+            pairs.append(a + filler)
+            i += 1
+        else:
+            pairs.append(a + b)
+            i += 2
+    return pairs
+
+def pf_crypt(pairs, m, d):
+    """d = +1 encrypt (right / down), d = -1 decrypt (left / up)."""
+    out = []
+    for p in pairs:
+        (r1, c1), (r2, c2) = pf_pos(m, p[0]), pf_pos(m, p[1])
+        if r1 == r2:                                   # same row
+            out.append(m[r1][(c1 + d) % 5] + m[r2][(c2 + d) % 5])
+        elif c1 == c2:                                 # same column
+            out.append(m[(r1 + d) % 5][c1] + m[(r2 + d) % 5][c2])
+        else:                                          # rectangle
+            out.append(m[r1][c2] + m[r2][c1])
+    return out
+
+def pf_enc(text, keyword):
+    return " ".join(pf_crypt(pf_digraphs(text), pf_matrix(keyword), +1))
+
+def pf_dec(ct, keyword):
+    pairs = [c for c in ct.upper() if c in A]
+    pairs = ["".join(pairs[i:i + 2]) for i in range(0, len(pairs), 2)]
+    return "".join(pf_crypt(pairs, pf_matrix(keyword), -1))
+
+# --- tests ---
+assert pf_enc("KEEPHIDDEN", "KINGS") == "SA AU QB CY EA CN"
+assert pf_enc("THEQUICKBROWNFOXJUMPSOVERTHELAZYDOG", "MONARCHY") == \
+    "PD GL XE DE DA NV OG AV EX OL PA UF DZ CF SM WD HR IW"      # lecture slide 18
+assert pf_dec("SA AU QB CY EA CN", "KINGS") == "KEEPHIDXDENX"
+for row in pf_matrix("KINGS"):
+    print(" ".join(row))</pre>
+    <p><b>Challenge:</b> use the code to solve SGT Problem 6 with keyword CHARLES.</p></div>
+
+  <div class="card"><h3>4. Rail fence</h3>
+    <p>Concept: a zig-zag row pattern, then read row by row. Decryption rebuilds the same pattern.</p>
+<pre class="code">def rail_pattern(n, depth):
+    """Row number of each position as the text zig-zags down and up."""
+    rows, r, step = [], 0, 1
+    for _ in range(n):
+        rows.append(r)
+        if depth &gt; 1:
+            if r == 0:
+                step = 1
+            elif r == depth - 1:
+                step = -1
+            r += step
+    return rows
+
+def read_order(n, depth):
+    pat = rail_pattern(n, depth)
+    return [i for row in range(depth) for i in range(n) if pat[i] == row]
+
+def rf_enc(pt, depth):
+    pt = "".join(c for c in pt.upper() if c.isalpha())
+    return "".join(pt[i] for i in read_order(len(pt), depth))
+
+def rf_dec(ct, depth):
+    ct = "".join(c for c in ct.upper() if c.isalpha())
+    order = read_order(len(ct), depth)
+    pt = [""] * len(ct)
+    for ch, pos in zip(ct, order):
+        pt[pos] = ch
+    return "".join(pt)
+
+# --- tests ---
+assert rf_enc("MEETMEAFTERTHETOGAPARTY", 2) == "MEMATRHTGPRYETEFETEOAAT"     # slide 33
+assert rf_enc("WEAREDISCOVEREDFLEEATONCE", 3) == "WECRLTEERDSOEEFEAOCAIVDEN"  # correct depth-3 result
+assert rf_dec("WECRLTEERDSOEEFEAOCAIVDEN", 3) == "WEAREDISCOVEREDFLEEATONCE"</pre>
+    <p><b>Challenge:</b> print the zig-zag grid as text, like the slides.</p></div>
+
+  <div class="card"><h3>5. Frequency analysis</h3>
+    <p>Concept: score every shift against English letter frequencies. The lowest chi-squared score wins.</p>
+<pre class="code">A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+# relative English frequencies per 1000 letters (from the tutorial sheet)
+ENGLISH = [73, 9, 30, 44, 130, 28, 16, 35, 74, 2, 3, 35, 25,
+           78, 74, 27, 3, 77, 63, 93, 27, 13, 16, 5, 19, 1]
+
+def letter_counts(text):
+    counts = [0] * 26
+    for c in text.upper():
+        if c in A:
+            counts[A.index(c)] += 1
+    return counts
+
+def chi_squared(text, shift):
+    """Lower score = this shift makes the text look more like English."""
+    counts = letter_counts(text)
+    n = sum(counts)
+    total = 0.0
+    for i in range(26):
+        expected = n * ENGLISH[i] / 1000
+        observed = counts[(i + shift) % 26]
+        total += (observed - expected) ** 2 / expected
+    return total
+
+def best_shift(text):
+    return min(range(26), key=lambda k: chi_squared(text, k))
+
+def caesar_dec(text, k):
+    return "".join(A[(A.index(c) - k) % 26] if c in A else c for c in text.upper())
+
+ct = "QBB JXU MEHBT YI Q IJQWU QDT QBB JXU CUD QDT MECUD CUHUBO FBQOUHI."
+k = best_shift(ct)
+print(k, caesar_dec(ct, k))
+assert k == 16</pre>
+    <p><b>Challenge:</b> try it on the second tutorial ciphertext. Why does it fail there? (Hint: look at the letter mix.)</p></div>
+
+  <div class="card"><h3>6. Kasiski and automatic Vigenere break</h3>
+    <p>Concept: distances between repeated trigrams share a factor, the key length. Then every column is a Caesar cipher.</p>
+<pre class="code">A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+ENGLISH = [73, 9, 30, 44, 130, 28, 16, 35, 74, 2, 3, 35, 25,
+           78, 74, 27, 3, 77, 63, 93, 27, 13, 16, 5, 19, 1]
+
+def vig(text, key, d=1):
+    t = [c for c in text.upper() if c in A]
+    return "".join(A[(A.index(c) + d * A.index(key[i % len(key)])) % 26] for i, c in enumerate(t))
+
+def kasiski(ct, n=3, max_factor=20):
+    """Distances between repeated n-grams tend to be multiples of the key length."""
+    last, dists = {}, []
+    for i in range(len(ct) - n + 1):
+        g = ct[i:i + n]
+        if g in last:
+            dists.append(i - last[g])
+        last[g] = i
+    tally = {f: sum(1 for d in dists if d % f == 0) for f in range(2, max_factor + 1)}
+    return dists, tally
+
+def best_shift(col):
+    counts = [col.count(c) for c in A]
+    n = len(col)
+    def chi(k):
+        return sum((counts[(i + k) % 26] - n * ENGLISH[i] / 1000) ** 2 / (n * ENGLISH[i] / 1000)
+                   for i in range(26))
+    return min(range(26), key=chi)
+
+def break_vigenere(ct, t):
+    """Once t is known, each column is just a Caesar cipher."""
+    return "".join(A[best_shift(ct[j::t])] for j in range(t))
+
+plain = ("THESECURITYOFACIPHERSHOULDNOTDEPENDONKEEPINGTHEALGORITHMSECRETONLYTHEKEYSHOULDBESECRET"
+         "THISIDEAISKNOWNASKERCKHOFFSPRINCIPLEANDITISONEOFTHEFOUNDATIONSOFMODERNCRYPTOGRAPHY"
+         "HISTORICALCIPHERSSUCHASTHECAESARCIPHERANDTHEVIGENERECIPHERAREEASYTOBREAKWITHFREQUENCYANALYSIS"
+         "BECAUSETHESTRUCTUREOFTHEENGLISHLANGUAGESURVIVESINTHECIPHERTEXTALONGERMESSAGEGIVESTHEATTACKER"
+         "MOREREPEATEDPATTERNSTOWORKWITHANDTHEKASISKIMETHODUSESTHOSEPATTERNSTOFINDTHELENGTHOFTHEKEY")
+ct = vig(plain, "LEMON")
+dists, tally = kasiski(ct)
+print("distances:", dists[:15])
+print("tally:", tally)
+t = max(tally, key=lambda f: (tally[f] &gt;= 0.75 * max(tally.values()), f))   # largest strong factor
+print("guessed key length:", t)
+key = break_vigenere(ct, t)
+print("recovered key:", key)
+assert key == "LEMON"
+assert vig(ct, key, -1) == plain</pre>
+    <p><b>Challenge:</b> shorten the plaintext until the break fails. How much text does the attacker need?</p></div>
+
+  <div class="card"><h3>7. LSB steganography</h3>
+    <p>Concept: <b>(p &amp; ~1) | bit</b> clears the last bit, then sets it to the hidden bit.</p>
+<pre class="code">def embed(pixels, bits):
+    """Overwrite the least significant bit of each pixel with one hidden bit."""
+    assert len(bits) &lt;= len(pixels), "not enough capacity"
+    out = list(pixels)
+    for i, b in enumerate(bits):
+        out[i] = (out[i] &amp; ~1) | b
+    return out
+
+def extract(pixels, n_bits):
+    return [p &amp; 1 for p in pixels[:n_bits]]
+
+def text_to_bits(s):
+    return [int(b) for ch in s.encode() for b in format(ch, "08b")]
+
+def bits_to_text(bits):
+    return bytes(int("".join(map(str, bits[i:i + 8])), 2) for i in range(0, len(bits), 8)).decode()
+
+# --- tests ---
+assert embed([186, 187, 52, 201], [1, 0, 1, 1]) == [187, 186, 53, 201]
+secret = "HI"
+cover = list(range(100, 140))                      # 40 fake pixels
+stego = embed(cover, text_to_bits(secret))
+assert bits_to_text(extract(stego, 16)) == "HI"
+assert max(abs(a - b) for a, b in zip(cover, stego)) &lt;= 1      # no pixel changes by more than 1
+print("capacity of 640x480 greyscale at 1 bit/pixel:", 640 * 480, "bits =", 640 * 480 // 8, "bytes")</pre>
+    <p><b>Challenge:</b> compute how many seconds of CD audio hide a 1 kB message at one bit per sample.</p></div>
+
+  <div class="card"><h3>8. One-time pad and key reuse</h3>
+    <p>Concept: Ci = Pi + Ki mod 26 gives perfect secrecy only if the key is random, as long as the message, and used once.</p>
+<pre class="code">import secrets
+
+def otp_keygen(n):
+    return [secrets.randbelow(26) for _ in range(n)]          # truly random, as long as the message
+
+def otp_enc(pt, key):
+    return [(ord(p) - 65 + k) % 26 for p, k in zip(pt, key)]  # Ci = (Pi + Ki) mod 26
+
+def otp_dec(ct, key):
+    return "".join(chr((c - k) % 26 + 65) for c, k in zip(ct, key))
+
+def to_nums(s):
+    return [ord(c) - 65 for c in s]
+
+# --- tests ---
+p1, p2 = "ATTACKATDAWN", "RETREATATDUSK"[:12]
+k = otp_keygen(12)
+c1, c2 = otp_enc(p1, k), otp_enc(p2, k)
+assert otp_dec(c1, k) == p1
+
+# TWO-TIME PAD BREAK: reusing the key leaks the difference of the plaintexts
+diff_c = [(a - b) % 26 for a, b in zip(c1, c2)]
+diff_p = [(a - b) % 26 for a, b in zip(to_nums(p1), to_nums(p2))]
+assert diff_c == diff_p                                       # key has cancelled out!
+print("Key reuse: C1 - C2 = P1 - P2 =", diff_c)
+
+# XOR version (bytes), the same idea modern ciphers use
+def xor(data, key):
+    return bytes(d ^ k for d, k in zip(data, key))
+kb = secrets.token_bytes(5)
+assert xor(xor(b"HELLO", kb), kb) == b"HELLO"</pre>
+    <p><b>Challenge:</b> given C1 - C2 and a guess for P1 ("ATTACK"), recover that part of P2. This is a crib attack.</p></div>
+</div>
+
+<!-- ================= TAB 5 PROJECT ================= -->
+<div class="tab" id="tab-proj">
+  <div class="card">
+    <h2>Mini Project: StegoVault</h2>
+    <p><b>Goal:</b> hide an encrypted message inside the least significant bits of an image, then build a Warden that tries to detect it, and measure its advantage.</p>
+    <p>It combines <b>Week 3</b> (Vigenere, LSB, stegosystem syntax, Warden, security game) with <b>Week 2</b> (Kerckhoffs' principle, one-time pad, perfect secrecy, advantage and negligible).</p>
+    <div class="note"><b>Big idea you will discover:</b> classical encryption (Vigenere) leaves letter structure in the bits, so a Warden still spots the stegotext. Only a one-time-pad style random-looking payload gives advantage near 0.</div>
+  </div>
+
+  <div class="card"><h3>Live demo (run this first)</h3>
+    <textarea id="p_msg">MEETATTHEBRIDGEATMIDNIGHTWITHTHEPACKAGEPLEASEDONOTBELATE</textarea>
+    <div class="row"><label>payload</label>
+      <select id="p_mode"><option value="raw">raw text</option><option value="vig">Vigenere (key LEMON)</option><option value="otp">one-time pad (XOR)</option></select>
+      <button onclick="runDemo()">Hide and test the Warden</button></div>
+    <div id="p_out"></div>
+  </div>
+
+  <div class="card"><h3>Milestones</h3>
+    <ol>
+      <li><b>M1 LSB layer:</b> make_cover, embed, extract. Test: [186,187,52,201] with bits 1,0,1,1 gives [187,186,53,201].</li>
+      <li><b>M2 Encryption layer:</b> raw, Vigenere, OTP (XOR with random key bytes).</li>
+      <li><b>M3 Stegosystem syntax:</b> hide and reveal, with a 2-byte length header. Prove correctness: Reveal(K, Hide(K, C, H)) = H.</li>
+      <li><b>M4 Warden:</b> take the first n LSBs, and for each bit position 0 to 7 inside a byte compute the share of ones. Clean covers give about 0.5. Flag anything below 0.1 or above 0.9.</li>
+      <li><b>M5 Security game:</b> challenger flips b. b=0: send Hide output. b=1: send a fresh cover. Warden guesses. Compute Adv = 2 x |Pr[b'=b] - 1/2| for raw, Vigenere and OTP.</li>
+    </ol>
+    <h3>Files</h3>
+    <p>Save the starter as <b>stegovault.py</b> and the tests as <b>test_stegovault.py</b> in the same folder. Run <b>python3 test_stegovault.py</b>. All five tests must print PASS.</p>
+    <details open><summary>Starter code (fill in the TODOs)</summary><pre class="code"># stegovault.py  (STARTER) -- fill in every TODO, then run:  python3 test_stegovault.py
+import random
+import secrets
+
+A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+def clean(text):
+    """Uppercase, keep only A-Z."""
+    raise NotImplementedError  # TODO
+
+def vig(text, key, d=1):
+    """Vigenere: d=+1 encrypt, d=-1 decrypt (Week 3)."""
+    raise NotImplementedError  # TODO
+
+def to_bits(data):
+    """bytes -&gt; list of bits, most significant bit first."""
+    raise NotImplementedError  # TODO
+
+def from_bits(bits):
+    """list of bits -&gt; bytes."""
+    raise NotImplementedError  # TODO
+
+# ---- M1: LSB layer ----
+def make_cover(n):
+    """n random pixel values 0-255 (a high-variability 'image')."""
+    raise NotImplementedError  # TODO
+
+def embed(cover, bits):
+    """Overwrite the LSB of cover[i] with bits[i]. Return a NEW list."""
+    raise NotImplementedError  # TODO
+
+def extract(stego, n_bits):
+    raise NotImplementedError  # TODO
+
+# ---- M2: encryption layer ----
+def encrypt(mode, msg, key):
+    """mode: 'raw' | 'vigenere' | 'otp'. Return bytes. OTP = XOR with random key bytes."""
+    raise NotImplementedError  # TODO
+
+def decrypt(mode, data, key):
+    raise NotImplementedError  # TODO
+
+# ---- M3: the stegosystem syntax (KeyGen is just choosing key; Hide; Reveal) ----
+def hide(cover, mode, msg, key):
+    """encrypt -&gt; add a 2-byte length header -&gt; to_bits -&gt; embed."""
+    raise NotImplementedError  # TODO
+
+def reveal(stego, mode, key):
+    """read 16 header bits -&gt; read the payload -&gt; decrypt. Must satisfy Reveal(K, Hide(K,C,H)) = H."""
+    raise NotImplementedError  # TODO
+
+# ---- M4: the Warden ----
+def warden_says_stego(pixels, n_bits):
+    """Take the first n_bits LSBs. For each bit position r in 0..7 of a byte, compute the share of 1s.
+    A clean cover gives about 0.5. Return True if any share is below 0.1 or above 0.9."""
+    raise NotImplementedError  # TODO
+
+# ---- M5: the security game ----
+def advantage(mode, trials=400, msg_len=100):
+    """Play the game: b=0 -&gt; Hide output, b=1 -&gt; fresh cover. Warden guesses b'.
+    Return 2 * |Pr[b' = b] - 1/2|."""
+    raise NotImplementedError  # TODO</pre></details>
+    <details open><summary>Tests</summary><pre class="code"># test_stegovault.py -- put next to your stegovault.py
+import secrets
+from stegovault import *
+
+def test_lsb():
+    assert embed([186, 187, 52, 201], [1, 0, 1, 1]) == [187, 186, 53, 201]
+    assert extract([187, 186, 53, 201], 4) == [1, 0, 1, 1]
+
+def test_roundtrip():
+    msg = "MEETATTHEBRIDGEATMIDNIGHT"
+    for mode in ["raw", "vigenere", "otp"]:
+        key = {"raw": None, "vigenere": "LEMON", "otp": secrets.token_bytes(len(msg))}[mode]
+        s = hide(make_cover(1000), mode, msg, key)
+        assert reveal(s, mode, key) == msg, mode
+
+def test_pixels_change_by_at_most_one():
+    c = make_cover(1000)
+    s = hide(c, "raw", "HELLOWORLD", None)
+    assert all(abs(a - b) &lt;= 1 for a, b in zip(c, s))
+
+def test_warden_beats_weak_modes():
+    assert advantage("raw") &gt; 0.9
+    assert advantage("vigenere") &gt; 0.9
+
+def test_otp_is_hard_to_detect():
+    assert advantage("otp") &lt; 0.2
+
+for t in [test_lsb, test_roundtrip, test_pixels_change_by_at_most_one,
+          test_warden_beats_weak_modes, test_otp_is_hard_to_detect]:
+    t()
+    print("PASS", t.__name__)</pre></details>
+    <details><summary>Reference solution (only after you have tried for real)</summary><pre class="code">import random
+import secrets
+
+A = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+# ---------- helpers ----------
+def clean(text):
+    return "".join(c for c in text.upper() if c in A)
+
+def vig(text, key, d=1):
+    return "".join(A[(A.index(c) + d * A.index(key[i % len(key)])) % 26]
+                   for i, c in enumerate(text))
+
+def to_bits(data):
+    return [(byte &gt;&gt; (7 - i)) &amp; 1 for byte in data for i in range(8)]
+
+def from_bits(bits):
+    return bytes(int("".join(map(str, bits[i:i + 8])), 2) for i in range(0, len(bits), 8))
+
+# ---------- M1: LSB layer ----------
+def make_cover(n):
+    return [random.randrange(256) for _ in range(n)]       # high-variability "image"
+
+def embed(cover, bits):
+    assert len(bits) &lt;= len(cover)
+    out = cover[:]
+    for i, b in enumerate(bits):
+        out[i] = (out[i] &amp; 0xFE) | b
+    return out
+
+def extract(stego, n_bits):
+    return [p &amp; 1 for p in stego[:n_bits]]
+
+# ---------- M2: encryption layer ----------
+def encrypt(mode, msg, key):
+    msg = clean(msg)
+    if mode == "raw":
+        return msg.encode()
+    if mode == "vigenere":
+        return vig(msg, key).encode()
+    if mode == "otp":                                      # key = random bytes, len &gt;= len(msg)
+        return bytes(m ^ k for m, k in zip(msg.encode(), key))
+    raise ValueError(mode)
+
+def decrypt(mode, data, key):
+    if mode == "raw":
+        return data.decode()
+    if mode == "vigenere":
+        return vig(data.decode(), key, -1)
+    if mode == "otp":
+        return bytes(c ^ k for c, k in zip(data, key)).decode()
+    raise ValueError(mode)
+
+# ---------- M3: Hide / Reveal (the stegosystem syntax) ----------
+def hide(cover, mode, msg, key):
+    payload = encrypt(mode, msg, key)
+    framed = len(payload).to_bytes(2, "big") + payload     # 2-byte length header
+    return embed(cover, to_bits(framed))
+
+def reveal(stego, mode, key):
+    n = int.from_bytes(from_bits(extract(stego, 16)), "big")
+    data = from_bits(extract(stego, 16 + 8 * n))[2:]
+    return decrypt(mode, data, key)
+
+# ---------- M4: the Warden ----------
+def warden_says_stego(pixels, n_bits):
+    """Look at the LSB stream. Bit position r of each byte should be ~50% ones in a clean cover."""
+    lsbs = [p &amp; 1 for p in pixels[:n_bits]]
+    for r in range(8):
+        col = lsbs[r::8]
+        rate = sum(col) / len(col)
+        if rate &lt; 0.1 or rate &gt; 0.9:
+            return True
+    return False
+
+# ---------- M5: the security game ----------
+def advantage(mode, trials=400, msg_len=100):
+    wins = 0
+    for _ in range(trials):
+        msg = "".join(random.choice(A) for _ in range(msg_len))
+        key = {"raw": None, "vigenere": "LEMON", "otp": secrets.token_bytes(msg_len)}[mode]
+        cover = make_cover(2000)
+        n_bits = 8 * (msg_len + 2)
+        b = random.randrange(2)                            # b = 0 -&gt; stegotext, b = 1 -&gt; fresh cover
+        s = hide(cover, mode, msg, key) if b == 0 else make_cover(2000)
+        guess = 0 if warden_says_stego(s, n_bits) else 1
+        wins += (guess == b)
+    return 2 * abs(wins / trials - 0.5)                    # Adv = 2 * |Pr[b'=b] - 1/2|
+
+if __name__ == "__main__":
+    for mode, key in [("raw", None), ("vigenere", "LEMON"), ("otp", secrets.token_bytes(50))]:
+        m = "MEETATTHEBRIDGEATMIDNIGHT"
+        s = hide(make_cover(2000), mode, m, key)
+        assert reveal(s, mode, key) == m
+    print("correctness OK: Reveal(K, Hide(K, C, H)) = H")
+    for mode in ["raw", "vigenere", "otp"]:
+        print(mode, "-&gt; Warden advantage ~", round(advantage(mode), 2))</pre></details>
+  </div>
+
+  <div class="card"><h3>Write-up: answer in 5 to 8 lines</h3>
+    <ol>
+      <li>Which algorithms are public and which value is secret in StegoVault? Link this to <b>Kerckhoffs' principle</b>.</li>
+      <li>Why is Vigenere-encrypted ASCII still detectable? Which bits give it away?</li>
+      <li>Why does the OTP payload push the advantage towards 0? Link to <b>perfect secrecy</b> from Week 2.</li>
+      <li>Is your advantage for OTP <b>negligible</b>? What would negligible mean as the security parameter grows?</li>
+      <li>Your cover is random noise. Why would a real photo of snow be a worse cover (slide 33)?</li>
+      <li>Your Warden is passive. What can an active Warden do that breaks robustness?</li>
+    </ol>
+  </div>
+
+  <div class="card"><h3>Stretch goals</h3>
+    <ul>
+      <li>Use Pillow to hide bytes in a real PNG (<b>pip install pillow</b>) and compare the images.</li>
+      <li>Add a Kasiski attack against your own Vigenere payload after extracting it.</li>
+      <li>Build a composite cipher: Vigenere then rail fence, then hide it.</li>
+      <li>Add a second Warden that tests the whole LSB stream with a chi-squared test.</li>
+      <li>Simulate an MP3-style attack: drop every second pixel and measure how many bits survive (robustness).</li>
+      <li>Put the header inside the encrypted payload so no length byte leaks.</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+<script>
+const A26 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const EN = [73,9,30,44,130,28,16,35,74,2,3,35,25,78,74,27,3,77,63,93,27,13,16,5,19,1];
+function clean(s){ return String(s).toUpperCase().replace(/[^A-Z]/g,""); }
+function mod(n,m){ return ((n % m) + m) % m; }
+function caesar(text,k){ let o=""; for(const c of clean(text)) o+=A26[mod(A26.indexOf(c)+k,26)]; return o; }
+function vig(text,key,dir){
+  const t=clean(text), k=clean(key); if(!k.length) return "";
+  let o=""; for(let i=0;i<t.length;i++){ o+=A26[mod(A26.indexOf(t[i])+dir*A26.indexOf(k[i%k.length]),26)]; }
+  return o;
+}
+function pfMatrix(kw){
+  const seen=[]; for(const c of (clean(kw)+A26).replace(/J/g,"I")){ if(!seen.includes(c)) seen.push(c); }
+  const m=[]; for(let r=0;r<5;r++) m.push(seen.slice(r*5,r*5+5)); return m;
+}
+function pfPos(m,ch){ for(let r=0;r<5;r++) for(let c=0;c<5;c++) if(m[r][c]===ch) return [r,c]; return null; }
+function pfDigraphs(text){
+  const t=clean(text).replace(/J/g,"I").split(""); const out=[]; let i=0;
+  while(i<t.length){ const a=t[i]; const b=(i+1<t.length)?t[i+1]:"X";
+    if(a===b){ out.push(a+"X"); i+=1; } else { out.push(a+b); i+=2; } }
+  return out;
+}
+function pfCrypt(pairs,m,d){
+  return pairs.map(function(p){
+    const a=pfPos(m,p[0]), b=pfPos(m,p[1]); let out, rule;
+    if(a[0]===b[0]){ out=m[a[0]][mod(a[1]+d,5)]+m[b[0]][mod(b[1]+d,5)]; rule="same row"; }
+    else if(a[1]===b[1]){ out=m[mod(a[0]+d,5)][a[1]]+m[mod(b[0]+d,5)][b[1]]; rule="same column"; }
+    else { out=m[a[0]][b[1]]+m[b[0]][a[1]]; rule="rectangle"; }
+    return {pair:p,out:out,rule:rule};
+  });
+}
+function railPattern(n,depth){
+  const rows=[]; let r=0, step=1;
+  for(let i=0;i<n;i++){ rows.push(r); if(depth>1){ if(r===0) step=1; else if(r===depth-1) step=-1; r+=step; } }
+  return rows;
+}
+function rfOrder(n,depth){
+  const pat=railPattern(n,depth); const order=[];
+  for(let row=0;row<depth;row++) for(let i=0;i<n;i++) if(pat[i]===row) order.push(i);
+  return order;
+}
+function rfEnc(text,depth){ const t=clean(text); return rfOrder(t.length,depth).map(function(i){return t[i];}).join(""); }
+function rfDec(text,depth){
+  const t=clean(text); const order=rfOrder(t.length,depth); const out=new Array(t.length);
+  order.forEach(function(pos,k){ out[pos]=t[k]; }); return out.join("");
+}
+function counts(s){ const c=new Array(26).fill(0); for(const ch of clean(s)) c[A26.indexOf(ch)]++; return c; }
+function chi2Shift(s,k){
+  const c=counts(s); const n=c.reduce(function(a,b){return a+b;},0); if(!n) return Infinity;
+  let x=0; for(let i=0;i<26;i++){ const obs=c[mod(i+k,26)]; const exp=n*EN[i]/1000; x+=(obs-exp)*(obs-exp)/exp; }
+  return x;
+}
+function rankShifts(s){
+  const r=[]; for(let k=0;k<26;k++) r.push({k:k,chi:chi2Shift(s,k)});
+  r.sort(function(a,b){return a.chi-b.chi;}); return r;
+}
+function kasiski(ct,n,maxF){
+  n=n||3; maxF=maxF||20; const t=clean(ct); const seen=new Map(); const rep=[];
+  for(let i=0;i+n<=t.length;i++){ const g=t.substr(i,n); if(seen.has(g)) rep.push({gram:g,dist:i-seen.get(g)}); seen.set(g,i); }
+  const tally={}; for(let f=2;f<=maxF;f++) tally[f]=rep.filter(function(r){return r.dist%f===0;}).length;
+  return {rep:rep,tally:tally};
+}
+function suggestLength(tally){
+  const mx=Math.max.apply(null,Object.values(tally)); if(mx===0) return 0;
+  let best=0; for(const f of Object.keys(tally)){ if(tally[f]>=0.75*mx) best=Math.max(best,Number(f)); } return best;
+}
+function breakVig(ct,t){
+  const s=clean(ct); let key="";
+  for(let j=0;j<t;j++){ let col=""; for(let i=j;i<s.length;i+=t) col+=s[i]; key+=A26[rankShifts(col)[0].k]; }
+  return key;
+}
+function lsbEmbed(px,bits){ return px.map(function(p,i){ return i<bits.length ? ((p & 254) | bits[i]) : p; }); }
+function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ const t=a%b; a=b; b=t; } return a; }
+function factBig(n){ let r=1n; for(let i=2n;i<=BigInt(n);i++) r*=i; return r; }
+function log10Fact(n){
+  if(n<=170){ let s=0; for(let i=2;i<=n;i++) s+=Math.log10(i); return s; }
+  return n*Math.log10(n/Math.E)+0.5*Math.log10(2*Math.PI*n);
+}
+function sci(l){ const e=Math.floor(l); const m=Math.pow(10,l-e); return m.toFixed(2)+" x 10^"+e; }
+function toBitsBytes(bytes){ const b=[]; for(const x of bytes) for(let i=7;i>=0;i--) b.push((x>>i)&1); return b; }
+function randInt(n){ return Math.floor(Math.random()*n); }
+function makeCover(n){ const c=[]; for(let i=0;i<n;i++) c.push(randInt(256)); return c; }
+function payloadBytes(mode,msg){
+  const m=clean(msg); const bytes=[];
+  if(mode==="raw"){ for(const c of m) bytes.push(c.charCodeAt(0)); }
+  else if(mode==="vig"){ for(const c of vig(m,"LEMON",1)) bytes.push(c.charCodeAt(0)); }
+  else { for(const c of m) bytes.push(c.charCodeAt(0) ^ randInt(256)); }
+  return bytes;
+}
+function hideDemo(cover,mode,msg){
+  const bytes=payloadBytes(mode,msg); const hdr=[(bytes.length>>8)&255, bytes.length&255];
+  const bits=toBitsBytes(hdr.concat(bytes)); return {stego:lsbEmbed(cover,bits), nBits:bits.length};
+}
+function residueRates(px,nBits){
+  const l=[]; for(let i=0;i<nBits;i++) l.push(px[i]&1); const rates=[];
+  for(let r=0;r<8;r++){ let s=0,c=0; for(let i=r;i<l.length;i+=8){ s+=l[i]; c++; } rates.push(c?s/c:0); }
+  return rates;
+}
+function wardenSaysStego(px,nBits){ return residueRates(px,nBits).some(function(r){return r<0.1||r>0.9;}); }
+function advantage(mode,msg,trials){
+  let wins=0; const m=clean(msg);
+  for(let t=0;t<trials;t++){
+    const b=randInt(2); const cover=makeCover(Math.max(2000,(m.length+2)*8+50));
+    const h=hideDemo(cover,mode,m); const s=(b===0)?h.stego:makeCover(cover.length);
+    const guess=wardenSaysStego(s,h.nBits)?0:1; if(guess===b) wins++;
+  }
+  return 2*Math.abs(wins/trials-0.5);
+}
+
+
+/* ============ UI ============ */
+const $ = function(id){ return document.getElementById(id); };
+function esc(s){ return String(s).replace(/[&<>"]/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
+
+document.querySelectorAll(".tabbtn").forEach(function(b){
+  b.addEventListener("click", function(){
+    document.querySelectorAll(".tabbtn").forEach(function(x){ x.classList.remove("on"); });
+    document.querySelectorAll(".tab").forEach(function(x){ x.classList.remove("show"); });
+    b.classList.add("on"); $("tab-"+b.getAttribute("data-tab")).classList.add("show");
+  });
+});
+document.querySelectorAll("pre.code").forEach(function(pre){
+  const btn=document.createElement("button"); btn.className="copy"; btn.textContent="Copy";
+  btn.onclick=function(){ navigator.clipboard.writeText(pre.textContent.replace(/^Copy/,"")).then(function(){ btn.textContent="Copied"; setTimeout(function(){btn.textContent="Copy";},1200); }); };
+  pre.prepend(btn);
+});
+
+function chk(inputId,resId,accepted,numeric){
+  let v=$(inputId).value.toUpperCase().replace(/\s+/g,""); if(numeric) v=v.replace(/,/g,"");
+  const ok=accepted.some(function(a){ return a.toUpperCase().replace(/\s+/g,"")===v; });
+  const r=$(resId); r.textContent=ok?"Correct":"Not yet. Re-check your working."; r.className="res "+(ok?"good":"bad");
+}
+function chkPair(){
+  const p=$("b3").value.split(/[,\s]+/).map(Number); const r=$("b3r"); let ok=false;
+  if(p.length===2 && p.every(function(x){return Number.isInteger(x)&&x>=0&&x<=25;}) && p[0]!==p[1] && (2*p[0])%26===(2*p[1])%26) ok=true;
+  r.textContent=ok?"Correct: both map to "+((2*p[0])%26):"Not yet. Try 0 and another number."; r.className="res "+(ok?"good":"bad");
+}
+
+/* ---- drills ---- */
+const WORDS=["CIPHER","KERNEL","SECRET","BRIDGE","TUNNEL","WARDEN","SIGNAL","HIDDEN","RIVER","ARENA","STAGE","LOCK"];
+let drill=null;
+function newDrill(){
+  const type=randInt(3); const w=WORDS[randInt(WORDS.length)];
+  if(type===0){ const k=1+randInt(25); drill={q:"Caesar ENCRYPT "+w+" with k = "+k, a:caesar(w,k)}; }
+  else if(type===1){ const k=1+randInt(25); const c=caesar(w,k); drill={q:"Caesar DECRYPT "+c+" with k = "+k, a:w}; }
+  else { const keys=["KEY","SUN","BEN","DOG"]; const k=keys[randInt(4)]; drill={q:"Vigenere ENCRYPT "+w+" with key "+k, a:vig(w,k,1)}; }
+  $("drillQ").textContent=drill.q; $("drillA").value=""; $("drillR").textContent="";
+}
+function checkDrill(){
+  const ok=clean($("drillA").value)===drill.a; const r=$("drillR");
+  r.textContent=ok?"Correct":"Not yet"; r.className="res "+(ok?"good":"bad");
+}
+newDrill();
+
+/* ---- tools ---- */
+function t1(mode){
+  const text=$("t1_text").value, k=parseInt($("t1_key").value,10)||0;
+  if(mode==="enc") $("t1_out").textContent=caesar(text,k);
+  else if(mode==="dec") $("t1_out").textContent=caesar(text,-k);
+  else { let s=""; for(let i=0;i<26;i++) s+=("k="+i).padEnd(6)+caesar(text,-i)+"\n"; $("t1_out").textContent=s; }
+}
+function t2(dir){
+  const text=clean($("t2_text").value), key=clean($("t2_key").value);
+  if(!key){ $("t2_out").textContent="Enter a key."; return; }
+  const res=vig(text,key,dir); const n=Math.min(text.length,24);
+  const ks=[]; for(let i=0;i<text.length;i++) ks.push(key[i%key.length]);
+  function line(label,arr){ return label.padEnd(8)+arr.slice(0,n).map(function(x){return String(x).padStart(3);}).join("")+"\n"; }
+  const inp=text.split(""), kk=ks, outp=res.split("");
+  let s="Result: "+res+"\n\n";
+  s+=line(dir===1?"Plain":"Cipher",inp)+line("Key",kk);
+  s+=line(dir===1?"P num":"C num",inp.map(function(c){return A26.indexOf(c);}))+line("K num",kk.map(function(c){return A26.indexOf(c);}));
+  s+=line(dir===1?"C num":"P num",outp.map(function(c){return A26.indexOf(c);}))+line(dir===1?"Cipher":"Plain",outp);
+  if(text.length>n) s+="(first "+n+" letters shown)";
+  $("t2_out").textContent=s;
+}
+function matrixHtml(m){
+  return "<table>"+m.map(function(r){ return "<tr>"+r.map(function(c){ return "<td>"+(c==="I"?"I/J":c)+"</td>"; }).join("")+"</tr>"; }).join("")+"</table>";
+}
+function t3(dir){
+  const m=pfMatrix($("t3_kw").value); let pairs;
+  if(dir===1) pairs=pfDigraphs($("t3_text").value);
+  else { const c=clean($("t3_text").value).replace(/J/g,"I"); pairs=[]; for(let i=0;i+1<c.length;i+=2) pairs.push(c[i]+c[i+1]); }
+  if(!pairs.length){ $("t3_out").innerHTML="<div class='out'>Enter text.</div>"; return; }
+  const res=pfCrypt(pairs,m,dir);
+  let h=matrixHtml(m)+"<table><tr><th>pair</th><th>rule</th><th>result</th></tr>";
+  res.forEach(function(r){ h+="<tr><td>"+r.pair+"</td><td class='l'>"+r.rule+"</td><td>"+r.out+"</td></tr>"; });
+  h+="</table><div class='out'>Pairs: "+pairs.join(" ")+"\nResult: "+res.map(function(r){return r.out;}).join(" ")+"\nJoined: "+res.map(function(r){return r.out;}).join("")+"</div>";
+  $("t3_out").innerHTML=h;
+}
+function t4(dir){
+  const text=clean($("t4_text").value), d=Math.max(2,parseInt($("t4_depth").value,10)||2);
+  if(dir===1){
+    const pat=railPattern(text.length,d); let s="";
+    for(let r=0;r<d;r++){ s+=text.split("").map(function(c,i){ return pat[i]===r?c:"."; }).join(" ")+"\n"; }
+    s+="\nCiphertext: "+rfEnc(text,d)+"   ("+text.length+" letters)"; $("t4_out").textContent=s;
+  } else $("t4_out").textContent="Plaintext: "+rfDec(text,d);
+}
+function t5(){
+  const text=$("t5_text").value, c=counts(text), n=c.reduce(function(a,b){return a+b;},0);
+  if(!n){ $("t5_out").innerHTML="<div class='out'>Paste some letters.</div>"; return; }
+  let h="<table><tr><th>Letter</th><th>Cipher %</th><th style='width:160px'>Cipher</th><th>English %</th><th style='width:160px'>English</th></tr>";
+  for(let i=0;i<26;i++){
+    const cp=100*c[i]/n, ep=EN[i]/10;
+    h+="<tr><td>"+A26[i]+"</td><td>"+cp.toFixed(1)+"</td><td class='l'><div class='bar' style='width:"+Math.min(100,cp/15*100)+"%'></div></td><td>"+ep.toFixed(1)+"</td><td class='l'><div class='bar e' style='width:"+Math.min(100,ep/15*100)+"%'></div></td></tr>";
+  }
+  h+="</table>";
+  const rk=rankShifts(text).slice(0,3);
+  h+="<div class='out'>Best shifts (lowest chi-squared):\n"+rk.map(function(r){ return "shift "+String(r.k).padStart(2)+"  chi2="+r.chi.toFixed(1)+"\n   "+caesar(text,-r.k).slice(0,70); }).join("\n")+"\n\nShort or odd texts can fool this method. That is the point of the second tutorial ciphertext.</div>";
+  $("t5_out").innerHTML=h;
+}
+const SAMPLE_PLAIN="THESECURITYOFACIPHERSHOULDNOTDEPENDONKEEPINGTHEALGORITHMSECRETONLYTHEKEYSHOULDBESECRETTHISIDEAISKNOWNASKERCKHOFFSPRINCIPLEANDITISONEOFTHEFOUNDATIONSOFMODERNCRYPTOGRAPHYHISTORICALCIPHERSSUCHASTHECAESARCIPHERANDTHEVIGENERECIPHERAREEASYTOBREAKWITHFREQUENCYANALYSISBECAUSETHESTRUCTUREOFTHEENGLISHLANGUAGESURVIVESINTHECIPHERTEXTALONGERMESSAGEGIVESTHEATTACKERMOREREPEATEDPATTERNSTOWORKWITHANDTHEKASISKIMETHODUSESTHOSEPATTERNSTOFINDTHELENGTHOFTHEKEY";
+function loadT6(){ $("t6_text").value=vig(SAMPLE_PLAIN,"LEMON",1); t6(); }
+function t6(){
+  const ct=clean($("t6_text").value);
+  if(ct.length<30){ $("t6_out").innerHTML="<div class='out'>Need a longer ciphertext.</div>"; return; }
+  const k=kasiski(ct,3,20); const sug=suggestLength(k.tally);
+  const forced=parseInt($("t6_len").value,10); const t=forced>0?forced:sug;
+  let h="<div class='out'>Repeated trigrams (first 12): "+k.rep.slice(0,12).map(function(r){return r.gram+" d="+r.dist;}).join(" | ")+"</div>";
+  const mx=Math.max.apply(null,Object.values(k.tally))||1;
+  h+="<table><tr><th>factor</th><th>count</th><th style='width:200px'>bar</th></tr>";
+  Object.keys(k.tally).forEach(function(f){ h+="<tr><td"+(Number(f)===sug?" class='hl'":"")+">"+f+"</td><td>"+k.tally[f]+"</td><td class='l'><div class='bar' style='width:"+(100*k.tally[f]/mx)+"%'></div></td></tr>"; });
+  h+="</table>";
+  if(t>0){ const key=breakVig(ct,t); h+="<div class='out'>Key length used: "+t+(forced>0?" (forced)":" (suggested)")+"\nRecovered key: "+key+"\nPlaintext: "+vig(ct,key,-1).slice(0,120)+"...</div>"; }
+  else h+="<div class='out'>No clear key length. Try a longer ciphertext.</div>";
+  $("t6_out").innerHTML=h;
+}
+function t7(){
+  let p1=clean($("t7_p1").value), p2=clean($("t7_p2").value); const n=Math.min(p1.length,p2.length);
+  if(!n){ $("t7_out").textContent="Enter two texts."; return; }
+  p1=p1.slice(0,n); p2=p2.slice(0,n); const key=[]; for(let i=0;i<n;i++) key.push(randInt(26));
+  const enc=function(p){ return p.split("").map(function(c,i){ return mod(A26.indexOf(c)+key[i],26); }); };
+  const c1=enc(p1), c2=enc(p2); const dc=c1.map(function(x,i){ return mod(x-c2[i],26); });
+  const dp=p1.split("").map(function(c,i){ return mod(A26.indexOf(c)-A26.indexOf(p2[i]),26); });
+  const L=function(a){ return a.map(function(x){return String(x).padStart(3);}).join(""); };
+  $("t7_out").textContent="Key   "+L(key)+"\nC1    "+L(c1)+"\nC2    "+L(c2)+"\nC1-C2 "+L(dc)+"\nP1-P2 "+L(dp)+"\n\nSame? "+(dc.join()===dp.join()?"YES. The key cancels out, so reusing it leaks P1-P2.":"no");
+}
+function t8(){
+  const px=$("t8_px").value.split(/[,\s]+/).map(Number).filter(function(x){return !isNaN(x);});
+  const bits=$("t8_bits").value.replace(/[^01]/g,"").split("").map(Number);
+  if(bits.length>px.length){ $("t8_out").innerHTML="<div class='out'>Not enough pixels: capacity is "+px.length+" bits.</div>"; return; }
+  const np=lsbEmbed(px,bits); const b8=function(x){ return ("00000000"+x.toString(2)).slice(-8); };
+  let h="<table><tr><th>old pixel</th><th>old binary</th><th>bit</th><th>new binary</th><th>new pixel</th></tr>";
+  px.forEach(function(p,i){ const has=i<bits.length; h+="<tr><td>"+p+"</td><td>"+b8(p)+"</td><td>"+(has?bits[i]:"-")+"</td><td"+(has?" class='hl'":"")+">"+b8(np[i])+"</td><td>"+np[i]+"</td></tr>"; });
+  h+="</table><div class='out'>New pixels: "+np.join(",")+"\nExtracted bits: "+np.slice(0,bits.length).map(function(x){return x&1;}).join("")+"</div>";
+  $("t8_out").innerHTML=h;
+}
+
+/* ---- calculators ---- */
+function c1(){
+  const t=Math.max(1,parseInt($("c1_t").value,10)||1), N=Math.max(1,Math.min(24,parseInt($("c1_N").value,10)||1)), rate=parseFloat($("c1_rate").value)||1e12;
+  const rows=[];
+  const add=function(name,exact,lg){ rows.push({name:name,exact:exact,lg:lg}); };
+  add("Caesar (k = 0..25)","26",Math.log10(26));
+  add("Mono-alphabetic: 26!",factBig(26).toString(),log10Fact(26));
+  const v=(26n**BigInt(t)); add("Vigenere: 26^"+t,v.toString(),t*Math.log10(26));
+  const lf=log10Fact(Math.pow(2,N)); add("Substitution on "+N+"-bit strings: (2^"+N+")!",sci(lf)+" ("+(Math.floor(lf)+1)+" digits)",lf);
+  add("AES-128: 2^128",(2n**128n).toString(),128*Math.log10(2));
+  add("AES-256: 2^256",(2n**256n).toString(),256*Math.log10(2));
+  const secLog=function(lg){ return lg-Math.log10(rate); };
+  let h="<table><tr><th>Cipher</th><th>Keys</th><th>Time at "+esc($("c1_rate").value)+" guesses/s (worst case)</th></tr>";
+  rows.forEach(function(r){
+    const sl=secLog(r.lg); let tm;
+    if(sl<0) tm="under 1 second"; else if(sl<7.499) tm=Math.pow(10,sl).toFixed(1)+" seconds"; else tm="about 10^"+(sl-7.499).toFixed(1)+" years";
+    h+="<tr><td class='l'>"+esc(r.name)+"</td><td class='l' style='word-break:break-all;max-width:420px'>"+esc(r.exact)+"</td><td class='l'>"+tm+"</td></tr>";
+  });
+  h+="</table><div class='note'>Atoms in the observable universe is about 10^80 (slide 4). Compare that with the AES rows. Note: the slide says Caesar has 25 keys because k = 0 changes nothing.</div>";
+  $("c1_out").innerHTML=h;
+}
+function c2(){
+  const a=parseInt($("c2_a").value,10)||0, b=parseInt($("c2_b").value,10)||0, m=Math.max(2,parseInt($("c2_m").value,10)||26);
+  const g=gcd(a,m); let h="<div class='out'>";
+  h+="(a + b) mod m = "+mod(a+b,m)+"\n(a - b) mod m = "+mod(a-b,m)+"\n(a x b) mod m = "+mod(a*b,m)+"\ngcd(a, m) = "+g+"\n";
+  h+=(g===1?"gcd = 1: multiplying by a is a one-to-one map mod "+m+" (invertible, decryption possible).":"gcd > 1: multiplying by a is NOT one-to-one mod "+m+". Different inputs collide, so decryption is ambiguous.")+"</div>";
+  const seen={}; const coll=[]; const cells=[];
+  for(let x=0;x<m;x++){ const y=mod(a*x,m); if(seen[y]!==undefined) coll.push(seen[y]+" and "+x+" both give "+y); else seen[y]=x; cells.push([x,y]); }
+  if(coll.length) h+="<div class='out'>Collisions (first 6): "+coll.slice(0,6).join("; ")+"</div>";
+  if(m<=30){ h+="<table><tr><th>x</th>"+cells.map(function(c){return "<td>"+c[0]+"</td>";}).join("")+"</tr><tr><th>a x mod m</th>"+cells.map(function(c){return "<td>"+c[1]+"</td>";}).join("")+"</tr></table>"; }
+  $("c2_out").innerHTML=h;
+}
+function c3(){
+  const secs=(parseInt($("c3_min").value,10)||0)*60+(parseInt($("c3_sec").value,10)||0);
+  const sr=parseInt($("c3_sr").value,10)||44100, use=parseInt($("c3_use").value,10)||1, msg=parseInt($("c3_msg").value,10)||0;
+  const cap=secs*use, full=secs*sr;
+  $("c3_out").innerHTML="<div class='out'>Duration: "+secs+" s\nCapacity using "+use+" sample(s)/s: "+cap+" bits\nMessage: "+msg+" bits -> "+(cap>=msg?"fits":"DOES NOT FIT (short by "+(msg-cap)+" bits)")+"\nCapacity using every sample: "+full+" bits = "+Math.floor(full/8)+" bytes\n\nMP3 that drops every second sample (keeps s0, s2, s4, ...):\n  every-sample stegotext keeps about "+Math.floor(full/2)+" of "+full+" bits (half the bits are lost)\n  first-sample-each-second: sample index "+sr+"*k is "+(sr%2===0?"even, so those samples are kept":"odd for odd k, so some are lost")+"</div>";
+}
+function c3i(){
+  const w=parseInt($("c3_w").value,10)||0, h=parseInt($("c3_h").value,10)||0;
+  $("c3i_out").innerHTML="<div class='out'>"+w+" x "+h+" = "+(w*h)+" pixels\nCapacity at 1 bit/pixel: "+(w*h)+" bits = "+Math.floor(w*h/8)+" bytes\nRGB with 1 bit per channel: "+(3*w*h)+" bits</div>";
+}
+function c3p(){
+  const n=parseInt($("c3_n").value,10)||2; const lg=log10Fact(n); const bits=lg/Math.log10(2);
+  $("c3p_out").innerHTML="<div class='out'>"+n+" objects -> "+n+"! orders = "+(n<=20?factBig(n).toString():sci(lg))+"\nInformation per ordering: floor(log2("+n+"!)) = "+Math.floor(bits+1e-9)+" bits ("+bits.toFixed(2)+" exactly)\nExample: 4 subpackets -> 24 orders -> 4 bits per message of 4 packets.</div>";
+}
+
+/* ---- project demo ---- */
+function runDemo(){
+  const mode=$("p_mode").value, msg=clean($("p_msg").value);
+  if(msg.length<40){ $("p_out").innerHTML="<div class='out'>Use at least 40 letters so the Warden has enough samples.</div>"; return; }
+  const cover=makeCover(Math.max(2000,(msg.length+2)*8+50)); const h=hideDemo(cover,mode,msg);
+  const rS=residueRates(h.stego,h.nBits), rC=residueRates(makeCover(cover.length),h.nBits);
+  let html="<table><tr><th>Bit position in byte</th>"+[0,1,2,3,4,5,6,7].map(function(i){return "<th>"+i+"</th>";}).join("")+"</tr>";
+  html+="<tr><td class='l'>share of 1s, stegotext</td>"+rS.map(function(r){ return "<td"+((r<0.1||r>0.9)?" class='hl'":"")+">"+r.toFixed(2)+"</td>"; }).join("")+"</tr>";
+  html+="<tr><td class='l'>share of 1s, clean cover</td>"+rC.map(function(r){return "<td>"+r.toFixed(2)+"</td>";}).join("")+"</tr></table>";
+  const verdict=wardenSaysStego(h.stego,h.nBits);
+  const adv=advantage(mode,msg,300);
+  html+="<div class='out'>Pixels before: "+cover.slice(0,12).join(",")+"\nPixels after:  "+h.stego.slice(0,12).join(",")+"\n(each pixel changes by at most 1)\n\nWarden verdict on THIS stegotext: "+(verdict?"STEGO DETECTED":"looks clean")+"\nEstimated advantage over 300 games: "+adv.toFixed(2)+"  ("+(adv>0.5?"Warden wins easily":"Warden is close to guessing")+")\n\nWhy: ASCII letters always have bit 0 = 0 and bit 1 = 1. Vigenere keeps those letters. A one-time-pad XOR makes every bit look random.</div>";
+  $("p_out").innerHTML=html;
+}
+</script>
+</body>
+</html>

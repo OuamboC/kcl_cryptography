@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7CCSMCIS Cryptography - Week 2 Active Recall Quiz</title>
+<style>
+:root{--bg:#fbf8f1;--card:#ffffff;--text:#1c2b33;--muted:#5b6b73;--line:#d9d2c3;--accent:#c8102e;--ok:#1b7f3b;--okbg:#e3f4e8;--bad:#b3261e;--badbg:#fbe5e3;--easy:#1b7f3b;--medium:#a86400;--hard:#b3261e}
+@media (prefers-color-scheme: dark){:root{--bg:#161b1e;--card:#20272b;--text:#eef2f4;--muted:#a3b1b8;--line:#37434a;--accent:#ff6b81;--ok:#6fd58c;--okbg:#17301f;--bad:#ff8a80;--badbg:#3a1f1d;--easy:#6fd58c;--medium:#ffc266;--hard:#ff8a80}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Verdana,"Trebuchet MS",Tahoma,sans-serif;font-size:19px;line-height:1.75;letter-spacing:0.02em}
+.wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.25rem;margin:0 0 4px}
+.sub{color:var(--muted);font-size:.85rem;margin-bottom:16px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.tab{border:2px solid var(--line);background:var(--card);color:var(--text);padding:8px 14px;border-radius:10px;font:inherit;font-size:.85rem;cursor:pointer}
+.tab[aria-pressed="true"]{border-color:var(--accent);font-weight:bold}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden;margin-bottom:6px}
+.bar>div{height:100%;width:0;background:var(--accent);transition:width .3s}
+.stat{display:flex;justify-content:space-between;color:var(--muted);font-size:.8rem;margin-bottom:14px}
+.card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:20px}
+.badge{display:inline-block;font-size:.75rem;font-weight:bold;text-transform:uppercase;border:2px solid currentColor;border-radius:8px;padding:0 10px;margin-bottom:10px}
+.badge.Easy{color:var(--easy)}.badge.Medium{color:var(--medium)}.badge.Hard{color:var(--hard)}
+.q{font-size:1.1rem;margin:0 0 6px}
+.src{font-size:.8rem;color:var(--muted);border-left:4px solid var(--accent);padding:2px 10px;margin:0 0 16px;background:rgba(127,127,127,.08);border-radius:0 6px 6px 0}
+input[type=text]{width:100%;font:inherit;font-size:1.1rem;padding:12px 14px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
+input[type=text]:focus{outline:3px solid var(--accent);outline-offset:1px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+button.act{font:inherit;font-size:.9rem;padding:10px 18px;border-radius:10px;border:2px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+button.alt{background:transparent;color:var(--text);border-color:var(--line)}
+button:disabled{opacity:.4;cursor:not-allowed}
+.fb{margin-top:14px;padding:12px 14px;border-radius:10px;font-size:.95rem;display:none}
+.fb.ok{display:block;background:var(--okbg);color:var(--ok);border:2px solid var(--ok)}
+.fb.bad{display:block;background:var(--badbg);color:var(--bad);border:2px solid var(--bad)}
+.hint{margin-top:10px;color:var(--muted);font-size:.85rem;min-height:1.2em}
+.end{text-align:center}.end .big{font-size:2rem;font-weight:bold}
+ul.miss{text-align:left;font-size:.85rem;padding-left:20px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>7CCSMCIS Cryptography: Week 2 Quiz</h1>
+  <div class="sub">Encryption formalisation, One-Time Pads, Perfect Secrecy, IND-CPA. Type the missing term, press Enter.</div>
+  <div class="tabs" id="tabs"></div>
+  <div class="bar"><div id="prog"></div></div>
+  <div class="stat"><span id="pos"></span><span id="score"></span></div>
+  <div class="card" id="card"></div>
+</div>
+
+<script>
+"use strict";
+// Each question: tier, q (use ____ for the blank), a (accepted answers, lowercase), source
+const QUESTIONS = [
+// ---------- EASY ----------
+{tier:"Easy",q:"A message travels from Alice to Bob across a ____ channel (think TCP/IP).",a:["communication"],source:"Lecture 2.1 (File A), Slide 3: General Model of Network Security"},
+{tier:"Easy",q:"A symmetric encryption scheme is a triple of algorithms: KeyGen, Enc, and ____.",a:["dec","decryption"],source:"Lecture 2.1 (File A), Slide 10: Formalising Encryption"},
+{tier:"Easy",q:"In symmetric encryption the encryption key and decryption key are the ____ (k1 = k2).",a:["same","equal","identical"],source:"Lecture 2.1 (File A), Slide 13: Symmetric Encryption"},
+{tier:"Easy",q:"A cipher that processes input one fixed-size group of bits at a time is called a ____ cipher.",a:["block"],source:"Lecture 2.1 (File A), Slide 16: Ways in which plaintext is processed"},
+{tier:"Easy",q:"A cipher that processes input continuously, one element at a time, is called a ____ cipher.",a:["stream"],source:"Lecture 2.1 (File A), Slide 16: Ways in which plaintext is processed"},
+{tier:"Easy",q:"AES has a block size of ____ bits.",a:["128"],source:"Lecture 2.1 (File A), Slide 17: Enter Block Ciphers"},
+{tier:"Easy",q:"Kerckhoffs' principle says the security of a cryptosystem should rely only on the secrecy of the ____.",a:["key","keys"],source:"Lecture 2.1 (File A), Slide 35: Kerckhoffs' principles (1883)"},
+{tier:"Easy",q:"Caesar cipher with k = 3: the plaintext YES encrypts to the ciphertext ____.",a:["bhv"],source:"Lecture 2.1 (File A), Slide 31: The Caesar Cipher"},
+{tier:"Easy",q:"Caesar cipher with k = 3: the ciphertext EHQ decrypts to the plaintext ____.",a:["ben"],source:"Lecture 2.1 (File A), Slide 31: The Caesar Cipher"},
+{tier:"Easy",q:"The two general operations used to build symmetric ciphers are substitution and ____.",a:["transposition"],source:"Lecture 2.1 (File A), Slide 15: Characteristics of symmetric encryption schemes"},
+{tier:"Easy",q:"XOR identity law: x XOR x = 0^L, which is the all-____ string.",a:["zeroes","zeros","zero"],source:"Lecture 2.1 (File A), Slide 40: XOR"},
+{tier:"Easy",q:"A One-Time Pad key must only ever be used ____.",a:["once","one time","1 time"],source:"Lecture 2.2 (File B), Slide 16: Perfect Security: One-Time Pad"},
+// ---------- MEDIUM ----------
+{tier:"Medium",q:"The set of all possible keys is called the ____ space.",a:["key","keyspace"],source:"Lecture 2.1 (File A), Slide 12: Formalising Encryption (K, M, C)"},
+{tier:"Medium",q:"Correctness requires that Dec(k, Enc(k, m)) = ____.",a:["m"],source:"Lecture 2.1 (File A), Slide 10: Formalising Encryption"},
+{tier:"Medium",q:"For a function with |I| = |O| = N, the number of possible bijections is N ____.",a:["factorial","n factorial","!"],source:"Lecture 2.1 (File A), Slide 27: Number of Bijections"},
+{tier:"Medium",q:"Encryption must be injective: every plaintext has a ____ ciphertext.",a:["unique"],source:"Lecture 2.1 (File A), Slide 26: Bijection and Encryption"},
+{tier:"Medium",q:"Where possible we would like to reduce reliance on ____ (trusted third parties).",a:["ttp","ttps","trusted third party","trusted third parties"],source:"Lecture 2.1 (File A), Slide 5: General Model of Network Security"},
+{tier:"Medium",q:"The Caesar cipher key space contains exactly ____ keys.",a:["26"],source:"Lecture 2.1 (File A), Slide 34: Keyspace size and security"},
+{tier:"Medium",q:"Frequency analysis works on Caesar because in English the most frequent letter is ____.",a:["e"],source:"Lecture 2.1 (File A), Slide 37: Caesar Cipher Security?"},
+{tier:"Medium",q:"OTP over the alphabet A-Z: Ci = Pi + Ki mod ____.",a:["26"],source:"Lecture 2.1 (File A), Slide 38: The One-Time Pad"},
+{tier:"Medium",q:"OTP key space for an L-bit message is {0,1}^L, so its size is 2^____.",a:["l"],source:"SGT Week 2 (File C), Problem 4: Keyspace and One-Time Pads"},
+{tier:"Medium",q:"Under a One-Time Pad, Pr(P = p | C = c) = Pr(P = p): the posterior probability equals the ____ probability.",a:["prior"],source:"Lecture 2.2 (File B), Slide 16: Perfect Security: One-Time Pad"},
+{tier:"Medium",q:"Cryptographic security is defined as a game between an adversary and a ____.",a:["challenger"],source:"Lecture 2.2 (File B), Slide 26: Formally Defining Semantic Security"},
+{tier:"Medium",q:"KPA stands for Known ____ Attack.",a:["plaintext"],source:"Lecture 2.2 (File B), Slide 28: Traditional Security for Encryption"},
+{tier:"Medium",q:"CCA stands for Chosen ____ Attack (adversary receives decryptions of chosen ciphertexts).",a:["ciphertext"],source:"Lecture 2.2 (File B), Slide 28: Traditional Security for Encryption"},
+{tier:"Medium",q:"Exhaustive key search is embarrassingly ____.",a:["parallelisable","parallelizable","parallel"],source:"Lecture 2.2 (File B), Slide 31: Security for Encryption: Exhaustive Key Search"},
+{tier:"Medium",q:"The security parameter is conventionally written as the Greek letter ____.",a:["lambda"],source:"Lecture 2.2 (File B), Slide 45: Security parameters"},
+{tier:"Medium",q:"IND-CPA advantage = 2 x |Pr[b' = b] - ____|.",a:["1/2","0.5","half","a half"],source:"Lecture 2.2 (File B), Slide 37: Pictorial Definition of IND-CPA"},
+{tier:"Medium",q:"Lab 02, Module 2: the Python call os.____(len) returns len random bytes.",a:["urandom"],source:"Lab 02 (File D), Module-2: Encrypting Using One Time Pads, Listing 2"},
+{tier:"Medium",q:"Lab 02, Module 4 requires installing the Python package ____.",a:["pycryptodome"],source:"Lab 02 (File D), Module-0: Python Helper"},
+// ---------- HARD ----------
+{tier:"Hard",q:"Perfect security: Pr[Enc(k,m0) = c] = Pr[Enc(k,m1) = c] for all m0, m1 in M and all c in the ____ space.",a:["ciphertext","ciphertext space"],source:"Lecture 2.2 (File B), Slide 13: Formalising Perfect Security"},
+{tier:"Hard",q:"Perfect secrecy implies |K| is greater than or equal to |M|. In the proof, if |K| < |M| then some m* has Pr[M = m* | C = c] = ____.",a:["0","zero"],source:"Lecture 2.2 (File B), Slide 21: Perfect Secrecy implies |K| >= |M|"},
+{tier:"Hard",q:"KeyGen is probabilistic and Enc is potentially probabilistic, but Dec is always ____.",a:["deterministic"],source:"Lecture 2.1 (File A), Slide 11: Formalising Encryption (Terminology)"},
+{tier:"Hard",q:"In IND-CPA the challenger aborts if |m0| != |m1|, because otherwise the ciphertext length would ____ the bit b.",a:["leak","leaks","reveal","reveals"],source:"Lecture 2.2 (File B), Slides 38-39: Can you spot the problem? / Pictorial Definition of INDCPA"},
+{tier:"Hard",q:"A function f is ____ if for all c > 0, the limit of f(n) x n^c as n tends to infinity is 0.",a:["negligible"],source:"Lecture 2.2 (File B), Slide 42: Some notes on defining negligible"},
+{tier:"Hard",q:"An adversary is called efficient if it runs in ____ time.",a:["polynomial","poly","polynomial time"],source:"Lecture 2.2 (File B), Slides 43-44: Some notes on defining efficiency"},
+{tier:"Hard",q:"If Enc is IND-CPA secure it is also secure against message recovery and ____ recovery.",a:["key"],source:"Lecture 2.2 (File B), Slides 40-41: IND-CPA implies Message / Key Recovery Security"},
+{tier:"Hard",q:"Two-time pad: C1 XOR C2 = P1 XOR ____.",a:["p2"],source:"Lecture 2.2 (File B), Slide 18: Limitations of a One-Time Pad; Lab 02 (File D), Module-3"},
+{tier:"Hard",q:"A related-key attack targets an application that encrypts under both k and k XOR ____ (the name of a Greek letter, spelled out).",a:["delta"],source:"Lecture 2.2 (File B), Slide 32: Security for Encryption: Advanced Attacks"},
+{tier:"Hard",q:"SGT Problem 7: the intercepted two-time-pad ciphertexts decrypt to alpha and ____.",a:["bravo"],source:"SGT Week 2 (File C), Problem 7: Two-Time Pads"},
+{tier:"Hard",q:"SGT Problem 6: if the all-zeroes key is excluded from KeyGen, then Pr[Enc(k,m) = m] = ____, so perfect security fails.",a:["0","zero"],source:"SGT Week 2 (File C), Problem 6: Uniform Distribution and One-Time Pads"},
+{tier:"Hard",q:"Lecture 2.1 slide 29 compares (2^L)! with 2^K: the number of bijections is ____ larger than the number of keys.",a:["much","far","vastly","hugely","astronomically"],source:"Lecture 2.1 (File A), Slide 29: Bijection and Encryption"}
+];
+
+let tier = "All", deck = [], idx = 0, correct = 0, answered = false, missed = [];
+const $ = id => document.getElementById(id);
+const norm = s => s.toLowerCase().trim().replace(/\s+/g," ").replace(/^["']|["']$/g,"");
+
+function buildTabs(){
+  const box = $("tabs"); box.textContent = "";
+  ["All","Easy","Medium","Hard"].forEach(t=>{
+    const b = document.createElement("button");
+    b.className = "tab"; b.textContent = t; b.setAttribute("aria-pressed", String(t===tier));
+    b.onclick = ()=>{ tier = t; start(QUESTIONS.filter(x=>t==="All"||x.tier===t)); buildTabs(); };
+    box.appendChild(b);
+  });
+}
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
+function start(list){ deck = shuffle(list); idx = 0; correct = 0; missed = []; render(); }
+
+function render(){
+  const card = $("card"); card.textContent = "";
+  $("prog").style.width = (deck.length ? (idx/deck.length*100) : 0) + "%";
+  $("score").textContent = "Score: " + correct + " / " + idx;
+  if(idx >= deck.length){ return renderEnd(card); }
+  answered = false;
+  const item = deck[idx];
+  $("pos").textContent = "Question " + (idx+1) + " of " + deck.length;
+
+  const badge = document.createElement("div"); badge.className = "badge " + item.tier; badge.textContent = item.tier;
+  const q = document.createElement("p"); q.className = "q"; q.textContent = item.q;
+  const src = document.createElement("div"); src.className = "src"; src.textContent = "Source: " + item.source;
+  const inp = document.createElement("input"); inp.type = "text"; inp.id = "ans";
+  inp.autocomplete = "off"; inp.autocapitalize = "off"; inp.spellcheck = false; inp.setAttribute("aria-label","Your answer");
+  const row = document.createElement("div"); row.className = "row";
+  const check = document.createElement("button"); check.className = "act"; check.textContent = "Check";
+  const hint = document.createElement("button"); hint.className = "act alt"; hint.textContent = "Hint";
+  const next = document.createElement("button"); next.className = "act alt"; next.textContent = "Next"; next.disabled = true;
+  const hintBox = document.createElement("div"); hintBox.className = "hint";
+  const fb = document.createElement("div"); fb.className = "fb"; fb.setAttribute("role","status");
+
+  hint.onclick = ()=>{ const a = item.a[0]; hintBox.textContent = "Starts with \"" + a[0].toUpperCase() + "\", " + a.length + " character" + (a.length===1?"":"s") + "."; inp.focus(); };
+  check.onclick = ()=>{
+    if(answered) return;
+    const val = norm(inp.value); if(!val){ inp.focus(); return; }
+    answered = true;
+    const ok = item.a.map(norm).includes(val);
+    if(ok){ correct++; fb.className = "fb ok"; fb.textContent = "Correct. Now write it in your notebook."; }
+    else { missed.push(item); fb.className = "fb bad"; fb.textContent = "Not quite. Correct answer: " + item.a[0] + ". Write it out once by hand."; }
+    $("score").textContent = "Score: " + correct + " / " + (idx+1);
+    inp.disabled = true; check.disabled = true; next.disabled = false; next.className = "act"; next.focus();
+  };
+  next.onclick = ()=>{ idx++; render(); };
+  inp.addEventListener("keydown", e=>{ if(e.key==="Enter"){ e.preventDefault(); check.click(); } });
+  document.onkeydown = e=>{ if(e.key==="Enter" && answered){ e.preventDefault(); next.click(); } };
+
+  row.append(check, hint, next);
+  card.append(badge, q, src, inp, row, hintBox, fb);
+  inp.focus();
+}
+
+function renderEnd(card){
+  $("pos").textContent = "Finished"; $("prog").style.width = "100%";
+  document.onkeydown = null;
+  const wrap = document.createElement("div"); wrap.className = "end";
+  const big = document.createElement("div"); big.className = "big"; big.textContent = correct + " / " + deck.length;
+  const msg = document.createElement("p"); msg.textContent = missed.length ? "Review the ones you missed:" : "Perfect round. Move to a harder tier.";
+  wrap.append(big, msg);
+  if(missed.length){
+    const ul = document.createElement("ul"); ul.className = "miss";
+    missed.forEach(m=>{ const li = document.createElement("li"); li.textContent = m.q + "  =>  " + m.a[0] + "  [" + m.source + "]"; ul.appendChild(li); });
+    wrap.appendChild(ul);
+  }
+  const row = document.createElement("div"); row.className = "row"; row.style.justifyContent = "center";
+  const again = document.createElement("button"); again.className = "act"; again.textContent = "Restart this tier";
+  again.onclick = ()=> start(QUESTIONS.filter(x=>tier==="All"||x.tier===tier));
+  row.appendChild(again);
+  if(missed.length){
+    const retry = document.createElement("button"); retry.className = "act alt"; retry.textContent = "Retry missed only";
+    const list = missed.slice(); retry.onclick = ()=> start(list);
+    row.appendChild(retry);
+  }
+  wrap.appendChild(row); card.appendChild(wrap);
+}
+
+buildTabs();
+start(QUESTIONS);
+</script>
+</body>
+</html>

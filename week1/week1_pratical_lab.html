@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7CCSMCIS Cryptography - Week 1 Practice Lab</title>
+<style>
+:root {
+  --bg:#e9efed; --card:#f6f9f8; --ink:#1b2730; --muted:#45565f; --line:#aebfba;
+  --accent:#17607a; --accent-ink:#fff; --ok:#14603a; --ok-bg:#d6eedf;
+  --bad:#962519; --bad-bg:#f5dbd6; --focus:#b85f00; --code-bg:#17232b; --code-ink:#e6f1f5;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:#131a1f; --card:#1b252c; --ink:#e7eef1; --muted:#a6b6bf; --line:#35464f;
+    --accent:#72c4df; --accent-ink:#0b1a21; --ok:#86d9a8; --ok-bg:#173728;
+    --bad:#ffa296; --bad-bg:#44211d; --focus:#ffb454; --code-bg:#0c1318; --code-ink:#e6f1f5;
+  }
+}
+* { box-sizing:border-box; }
+html { background:var(--bg); scroll-padding-top:4.5rem; }
+body {
+  margin:0; padding:0 1rem 4rem; color:var(--ink); background:var(--bg);
+  font-family:Verdana, Tahoma, "Trebuchet MS", Arial, sans-serif; font-size:18px;
+  line-height:1.7; letter-spacing:0.02em; word-spacing:0.08em; text-align:left;
+}
+main { max-width:48rem; margin:0 auto; }
+nav.top {
+  position:sticky; top:0; z-index:5; background:var(--bg); border-bottom:2px solid var(--line);
+  padding:0.5rem 0; margin:0 -1rem 1rem; padding-left:1rem; padding-right:1rem;
+}
+nav.top .in { max-width:48rem; margin:0 auto; display:flex; flex-wrap:wrap; gap:0.4rem; align-items:center; }
+nav.top a {
+  font-size:0.8rem; padding:0.2rem 0.7rem; border:2px solid var(--line); border-radius:0.5rem;
+  color:var(--ink); text-decoration:none; background:var(--card);
+}
+nav.top .prog { margin-left:auto; font-size:0.8rem; color:var(--muted); }
+h1 { font-size:1.5rem; line-height:1.3; margin:1rem 0 0.25rem; }
+h2 { font-size:1.3rem; line-height:1.3; margin:2.2rem 0 0.6rem; padding-top:0.4rem; border-top:3px solid var(--accent); }
+h3 { font-size:1.08rem; margin:1.4rem 0 0.3rem; }
+p { margin:0.5rem 0; }
+.sub { color:var(--muted); font-size:0.9rem; }
+.card { background:var(--card); border:2px solid var(--line); border-radius:0.75rem; padding:1rem 1.2rem; margin:0.9rem 0; }
+.card.key { border-color:var(--accent); }
+.tier { display:inline-block; font-size:0.8rem; font-weight:bold; padding:0 0.7rem; border:2px solid var(--accent); border-radius:1rem; color:var(--accent); margin-right:0.4rem; }
+ol, ul { padding-left:1.4rem; margin:0.4rem 0; }
+li { margin:0.25rem 0; }
+code { font-family:Consolas, "Courier New", monospace; font-size:0.92em; background:var(--bg); padding:0.05rem 0.35rem; border-radius:0.3rem; }
+.codewrap { position:relative; margin:0.6rem 0; }
+pre {
+  margin:0; padding:0.9rem 1rem; background:var(--code-bg); color:var(--code-ink);
+  border-radius:0.6rem; overflow-x:auto; font-family:Consolas, "Courier New", monospace;
+  font-size:0.8rem; line-height:1.55; letter-spacing:0; word-spacing:0; tab-size:4;
+}
+pre code { background:none; padding:0; font-size:inherit; }
+.copy {
+  position:absolute; top:0.4rem; right:0.4rem; font:inherit; font-size:0.7rem; letter-spacing:0;
+  padding:0.15rem 0.6rem; border-radius:0.4rem; border:1px solid var(--code-ink);
+  background:transparent; color:var(--code-ink); cursor:pointer;
+}
+details { margin:0.6rem 0; border:2px solid var(--line); border-radius:0.6rem; background:var(--bg); }
+details > summary { cursor:pointer; padding:0.5rem 0.9rem; font-weight:bold; font-size:0.95rem; }
+details > div { padding:0 1rem 0.8rem; }
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible, a:focus-visible {
+  outline:3px solid var(--focus); outline-offset:2px;
+}
+.btn { font:inherit; font-size:0.9rem; letter-spacing:inherit; padding:0.45rem 1rem; border-radius:0.5rem; cursor:pointer; border:2px solid var(--accent); background:var(--accent); color:var(--accent-ink); font-weight:bold; }
+.btn.ghost { background:transparent; color:var(--accent); font-weight:normal; }
+input[type=text], input[type=number], textarea, select {
+  font:inherit; font-size:0.9rem; letter-spacing:0.03em; padding:0.4rem 0.6rem; border-radius:0.5rem;
+  border:2px solid var(--line); background:var(--bg); color:var(--ink); max-width:100%;
+}
+textarea { width:100%; font-family:Consolas, "Courier New", monospace; letter-spacing:0; }
+label { font-size:0.85rem; color:var(--muted); display:block; margin-top:0.5rem; }
+.row { display:flex; flex-wrap:wrap; gap:0.8rem; align-items:flex-end; }
+.tablewrap { overflow-x:auto; margin:0.6rem 0; }
+table { border-collapse:collapse; width:100%; font-size:0.82rem; }
+th, td { text-align:left; padding:0.3rem 0.55rem; border-bottom:1px solid var(--line); white-space:nowrap; }
+td.mono, .mono { font-family:Consolas, "Courier New", monospace; letter-spacing:0; }
+.out { margin-top:0.6rem; font-size:0.9rem; }
+.out .big { font-size:1.05rem; font-weight:bold; }
+.warn { border-left:5px solid var(--focus); padding:0.3rem 0.8rem; background:var(--bg); border-radius:0 0.4rem 0.4rem 0; font-size:0.9rem; }
+.tick { display:flex; gap:0.6rem; align-items:flex-start; margin:0.35rem 0; }
+.tick input { width:1.3rem; height:1.3rem; margin-top:0.35rem; flex:none; }
+.tick label { display:block; margin:0; font-size:1rem; color:var(--ink); }
+.err { color:var(--bad); font-weight:bold; }
+.good { color:var(--ok); font-weight:bold; }
+.pill { font-size:0.8rem; color:var(--muted); }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior:auto !important; } }
+</style>
+</head>
+<body>
+<nav class="top" aria-label="Sections">
+  <div class="in">
+    <a href="#how">Start</a>
+    <a href="#exercises">Exercises</a>
+    <a href="#calc">Calculation lab</a>
+    <a href="#python">Python skills</a>
+    <a href="#project">Mini project</a>
+    <span class="prog" id="progress" aria-live="polite"></span>
+  </div>
+</nav>
+
+<main>
+<h1>Week 1 Practice Lab: Information Security Foundations</h1>
+<p class="sub">7CCSMCIS Cryptography. Do it, do not just read it. Everything runs in your browser except the Python, which you run on your own machine (or CoCalc, as in Lab 01).</p>
+
+<h2 id="how">0. How to use this page</h2>
+<div class="card key">
+  <ol>
+    <li>Work in 25-minute blocks, then take 5 minutes off.</li>
+    <li>Pick ONE item. Try it on paper first. Then check.</li>
+    <li>Tick the box when done. Ticks are saved in this browser.</li>
+    <li>Suggested order: Exercises, Calculation lab, Python skills, Mini project.</li>
+  </ol>
+  <p class="pill">There is no earlier week in this module yet, so the mini project builds on this week's lectures, the Small Group Tutorial and Lab 01. Later weeks (encryption, hashing, MACs, signatures) plug straight into it.</p>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="exercises">1. Exercises from your notes</h2>
+
+<div class="card">
+  <h3><span class="tier">Easy</span> Hand XOR and base64 (Lab 01)</h3>
+  <p>Take the three letters <code>Kar</code> from "Karma police".</p>
+  <ol>
+    <li>Write the hex of K, a, r (use an ASCII table).</li>
+    <li>Write each byte in 8-bit binary.</li>
+    <li>XOR each byte with <code>00000001</code>.</li>
+    <li>Join the 24 bits and split into four 6-bit chunks.</li>
+    <li>Convert each chunk to base64 (A to Z = 0 to 25, a to z = 26 to 51).</li>
+  </ol>
+  <details><summary>Check my answer</summary><div>
+    <p class="mono">K = 4b = 01001011 &rarr; 01001010 = 4a = J<br>
+    a = 61 = 01100001 &rarr; 01100000 = 60 = `<br>
+    r = 72 = 01110010 &rarr; 01110011 = 73 = s</p>
+    <p class="mono">010010 100110 000001 110011 = 18, 38, 1, 51 = S m B z</p>
+    <p>Answer: <b>SmBz</b>, the start of the lab's sanity string. Verify it in the XOR tool in section 2.</p>
+  </div></details>
+  <div class="tick"><input type="checkbox" id="t_ex1" data-tick><label for="t_ex1">Easy exercise done</label></div>
+</div>
+
+<div class="card">
+  <h3><span class="tier">Medium</span> RBAC composition and attack analysis</h3>
+  <p>UA (subject to role): Ana: Analyst, Ben: Admin, Cleo: Analyst, Dev: Guest.<br>
+  PA (role to privileges): Guest: Read Wiki. Analyst: Read Wiki, Read Logs. Admin: Read Logs, Write Logs, Delete Logs.</p>
+  <ol>
+    <li>Write UA &#8900; PA as every (Subject, Privilege) pair. How many pairs?</li>
+    <li>Dev edits the UA table so Dev becomes Admin. Which CIA properties are now at risk, and why?</li>
+    <li>With 5,000 users, 200 objects and 3 privileges, how many cells would an explicit matrix need? How many rows would UA need?</li>
+  </ol>
+  <p class="pill">Use the RBAC composer in section 2 to check part 1.</p>
+  <details><summary>Check my answer</summary><div>
+    <ol>
+      <li>(Ana, Read Wiki), (Ana, Read Logs), (Cleo, Read Wiki), (Cleo, Read Logs), (Ben, Read Logs), (Ben, Write Logs), (Ben, Delete Logs), (Dev, Read Wiki). <b>8 pairs.</b> Trap: Admin does NOT inherit Read Wiki, because PA never grants it.</li>
+      <li>The edit itself is an <b>integrity</b> violation (the protection state changed without the owner's authorisation, as in SGT Problem 4(d)). Dev then gains <b>confidentiality</b> loss (reads logs), more integrity loss (writes logs) and <b>availability</b> loss (deletes logs).</li>
+      <li>5,000 &times; 200 &times; 3 = <b>3,000,000 cells</b>, versus 5,000 UA rows plus a tiny PA table (3 roles). That is why RBAC scales.</li>
+    </ol>
+  </div></details>
+  <div class="tick"><input type="checkbox" id="t_ex2" data-tick><label for="t_ex2">Medium exercise done</label></div>
+</div>
+
+<div class="card">
+  <h3><span class="tier">Hard</span> Break the single-byte XOR cipher</h3>
+  <p>Ciphertext (hex):<br><code>210e09060b0b1e4b4714080a02080902470b0213470a0247081213470801470a1e4704060002</code></p>
+  <ol>
+    <li>First, try it with the breaker tool in section 2 and see the ranked guesses.</li>
+    <li>Then write your own Python 3 version (lessons in section 3). Loop over keys 0 to 255, score each candidate, keep the best.</li>
+    <li>Answer in writing: why is a 256-key space trivial? What property would a one-time pad have that this lacks?</li>
+  </ol>
+  <div class="warn">The Lab 01 sample solution is Python 2 (<code>print best</code>, <code>.encode("hex")</code>) and base64-encodes the un-XORed string. Use the Python 3 versions in section 3.</div>
+  <details><summary>Check my answer</summary><div>
+    <p>Key <b>0x67</b> (the letter g). Plaintext: <b>Finally, someone let me out of my cage</b>.</p>
+    <p>A one-byte key has only 2<sup>8</sup> = 256 possibilities, so trying all of them takes microseconds. A one-time pad uses a truly random key as long as the message and used once, which gives perfect security: the ciphertext leaks nothing beyond the plaintext distribution (Lecture 1.2, Slide 6).</p>
+  </div></details>
+  <div class="tick"><input type="checkbox" id="t_ex3" data-tick><label for="t_ex3">Hard exercise done</label></div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="calc">2. Calculation lab</h2>
+
+<div class="card">
+  <h3>A. Text &rarr; hex &rarr; binary &rarr; XOR &rarr; base64</h3>
+  <p class="sub">ASCII text only, up to 60 characters. Key is one byte in hex (00 to ff).</p>
+  <div class="row">
+    <div><label for="xText">Text</label><input type="text" id="xText" value="Kar" size="34"></div>
+    <div><label for="xKey">Key (hex byte)</label><input type="text" id="xKey" value="01" size="4"></div>
+    <button class="btn" type="button" id="xGo">Work it out</button>
+  </div>
+  <div class="out" id="xOut"></div>
+  <p class="pill">Try the full lab string "Karma police, arrest this man, he talks in maths" with key 01. The base64 should match the lab's sanity check.</p>
+</div>
+
+<div class="card">
+  <h3>B. Single-byte XOR breaker</h3>
+  <label for="bHex">Ciphertext (hex)</label>
+  <textarea id="bHex" rows="3">210e09060b0b1e4b4714080a02080902470b0213470a0247081213470801470a1e4704060002</textarea>
+  <div class="row"><button class="btn" type="button" id="bGo">Rank all 256 keys</button></div>
+  <div class="out" id="bOut"></div>
+  <p class="pill">Score = 2 points per space + 1 per letter, only for fully printable results. Real attacks use full letter-frequency tables (a later topic).</p>
+</div>
+
+<div class="card">
+  <h3>C. RBAC composer: UA &#8900; PA</h3>
+  <div class="row">
+    <div style="flex:1 1 15rem"><label for="uaIn">UA: one "subject: role" per line</label>
+    <textarea id="uaIn" rows="5">Ana: Analyst
+Ben: Admin
+Cleo: Analyst
+Dev: Guest</textarea></div>
+    <div style="flex:1 1 15rem"><label for="paIn">PA: one "role: privilege, privilege" per line</label>
+    <textarea id="paIn" rows="5">Guest: Read Wiki
+Analyst: Read Wiki, Read Logs
+Admin: Read Logs, Write Logs, Delete Logs</textarea></div>
+  </div>
+  <div class="row"><button class="btn" type="button" id="cGo">Compose</button></div>
+  <div class="out" id="cOut"></div>
+  <p class="pill">Formula: AC = {(S,P) | there exists R with (S,R) in UA and (R,P) in PA}. Try changing Dev to Admin and watch the pair count change.</p>
+</div>
+
+<div class="card">
+  <h3>D. Search-space and brute-force time</h3>
+  <p class="sub">Search space = choices per position ^ positions. Average attacker success needs half of it.</p>
+  <div class="row">
+    <div><label for="dB">Choices per position</label><input type="number" id="dB" value="256" min="2" max="1000000"></div>
+    <div><label for="dN">Positions</label><input type="number" id="dN" value="1" min="1" max="2000"></div>
+    <div><label for="dR">Guesses per second</label><input type="number" id="dR" value="1000000000" min="1"></div>
+  </div>
+  <div class="row" style="margin-top:0.6rem">
+    <button class="btn ghost" type="button" data-pre="256,1">Single-byte XOR key</button>
+    <button class="btn ghost" type="button" data-pre="26,8">8 lowercase letters</button>
+    <button class="btn ghost" type="button" data-pre="95,8">8 printable chars</button>
+    <button class="btn ghost" type="button" data-pre="95,12">12 printable chars</button>
+    <button class="btn ghost" type="button" data-pre="2,128">128-bit key</button>
+    <button class="btn" type="button" id="dGo">Calculate</button>
+  </div>
+  <div class="out" id="dOut"></div>
+</div>
+
+<h3>E. Calculation drills (paper first)</h3>
+<div class="card">
+  <ol>
+    <li>0x4B XOR 0x01 = ?</li>
+    <li>0xA5 XOR 0x5A = ?</li>
+    <li>What is x XOR x? What is x XOR 0x00?</li>
+    <li>m1 = 0x41, m2 = 0x42, key k = 0x7F reused. Find c1, c2, then c1 XOR c2. Compare with m1 XOR m2.</li>
+    <li>A 48-byte ciphertext is base64-encoded. How many characters long is the result?</li>
+    <li>If the anonymity set has N equally likely senders and you know nothing else, what is the chance of guessing the sender? Give N = 4 and N = 1000.</li>
+  </ol>
+  <details><summary>Check my answers</summary><div>
+    <ol>
+      <li>0x4A (01001011 XOR 00000001 = 01001010).</li>
+      <li>0xFF (10100101 XOR 01011010 = 11111111).</li>
+      <li>x XOR x = 0x00, and x XOR 0x00 = x. This is why XOR with the key twice decrypts.</li>
+      <li>c1 = 0x41 XOR 0x7F = 0x3E. c2 = 0x42 XOR 0x7F = 0x3D. c1 XOR c2 = 0x03 = m1 XOR m2. The key cancels, so reusing a key leaks the relationship between plaintexts (the two-time pad flaw).</li>
+      <li>Every 3 bytes become 4 characters: 48 / 3 &times; 4 = 64 characters.</li>
+      <li>1/N: 25% for N = 4, and 0.1% for N = 1000. This assumes a uniform guess; real attackers use timing and traffic analysis to beat it (Lecture 1.2, Slide 10).</li>
+    </ol>
+  </div></details>
+  <div class="tick"><input type="checkbox" id="t_drill" data-tick><label for="t_drill">Drills done</label></div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="python">3. Python you need to learn</h2>
+<p>Six short lessons, in order. For each: read the code, PREDICT the output on paper, run it, compare.</p>
+
+<div class="card">
+  <h3>Lesson 1. str versus bytes</h3>
+  <div class="codewrap"><button class="copy" type="button">Copy</button><pre><code>print("hi".encode())
+print("hi".encode().hex())
+print(list(b"hi"))</code></pre></div>
+  <details><summary>Output</summary><div><p class="mono">b'hi'<br>6869<br>[104, 105]</p><p>Crypto code works on bytes, not text. Every byte is an integer 0 to 255.</p></div></details>
+  <div class="tick"><input type="checkbox" id="t_l1" data-tick><label for="t_l1">Lesson 1 done</label></div>
+</div>
+
+<div class="card">
+  <h3>Lesson 2. XOR with ^ over bytes</h3>
+  <div class="codewrap"><button class="copy" type="button">Copy</button><pre><code>print(bytes(b ^ 1 for b in b"Kar"))</code></pre></div>
+  <details><summary>Output</summary><div><p class="mono">b'J`s'</p><p>Same as your hand work in the Easy exercise.</p></div></details>
+  <div class="tick"><input type="checkbox" id="t_l2" data-tick><label for="t_l2">Lesson 2 done</label></div>
+</div>
+
+<div class="card">
+  <h3>Lesson 3. Hex and base64 round trip</h3>
+  <div class="codewrap"><button class="copy" type="button">Copy</button><pre><code>import base64
+token = base64.b64encode(bytes(b ^ 1 for b in b"Kar"))
+print(token)
+print(base64.b64decode(token))
+print(bytes.fromhex("4a6073"))</code></pre></div>
+  <details><summary>Output</summary><div><p class="mono">b'SmBz'<br>b'J`s'<br>b'J`s'</p></div></details>
+  <div class="tick"><input type="checkbox" id="t_l3" data-tick><label for="t_l3">Lesson 3 done</label></div>
+</div>
+
+<div class="card">
+  <h3>Lesson 4. Dicts, sets and comprehensions (this IS UA &#8900; PA)</h3>
+  <div class="codewrap"><button class="copy" type="button">Copy</button><pre><code>UA = {"ana": "analyst", "ben": "admin"}
+PA = {"analyst": {"read"}, "admin": {"read", "write"}}
+AC = {(s, p) for s, r in UA.items() for p in PA[r]}
+print(sorted(AC))</code></pre></div>
+  <details><summary>Output</summary><div><p class="mono">[('ana', 'read'), ('ben', 'read'), ('ben', 'write')]</p><p>The comprehension is the formula AC = {(S,P) | there exists R: (S,R) in UA and (R,P) in PA}.</p></div></details>
+  <div class="tick"><input type="checkbox" id="t_l4" data-tick><label for="t_l4">Lesson 4 done</label></div>
+</div>
+
+<div class="card">
+  <h3>Lesson 5. Hashing and salting (the LinkedIn lesson)</h3>
+  <div class="codewrap"><button class="copy" type="button">Copy</button><pre><code>import hashlib
+def h(salt, pw):
+    return hashlib.sha256((salt + pw).encode()).hexdigest()[:16]
+
+print(h("", "password1"))
+print(h("", "password1"))
+print(h("A9", "password1"))
+print(h("Zq", "password1"))</code></pre></div>
+  <details><summary>Output</summary><div><p class="mono">0b14d501a594442a<br>0b14d501a594442a<br>aaa3fbd633793eac<br>36d4d0b44e52cd6a</p>
+  <p>Without a salt, two users with the same password get the same hash, so one cracked hash cracks every copy and precomputed tables work. A per-user random salt makes each hash different. (The project uses PBKDF2, a deliberately slow hash, which you will meet properly later.)</p></div></details>
+  <div class="tick"><input type="checkbox" id="t_l5" data-tick><label for="t_l5">Lesson 5 done</label></div>
+</div>
+
+<div class="card">
+  <h3>Lesson 6. Lab 01 in Python 3 (full solution)</h3>
+  <p>Try Lab 01 yourself first. Then compare.</p>
+  <details><summary>Part 1: format conversion</summary><div>
+  <div class="codewrap"><button class="copy" type="button">Copy</button><pre><code>import base64
+
+s = "Karma police, arrest this man, he talks in maths"
+hex_s = s.encode().hex()
+xored = bytes(b ^ 0x01 for b in s.encode())
+b64 = base64.b64encode(xored)
+
+with open("out.txt", "wb") as fh:
+    fh.write(b64)
+
+print(hex_s)
+print(b64.decode())</code></pre></div>
+  <p>The printed base64 should be <span class="mono">SmBzbGAhcW5taGJkLSFgc3NkcnUhdWlociFsYG8tIWlkIXVgbWpyIWhvIWxgdWly</span>.</p>
+  </div></details>
+  <details><summary>Part 2: break the single-byte XOR</summary><div>
+  <div class="codewrap"><button class="copy" type="button">Copy</button><pre><code>CIPHER = bytes.fromhex(
+    "210e09060b0b1e4b4714080a02080902470b0213470a0247081213470801470a1e4704060002"
+)
+
+def printable(text):
+    return all(32 &lt;= ord(c) &lt; 127 for c in text)
+
+def score(text):
+    return text.count(" ") * 2 + sum(c.isalpha() for c in text)
+
+best_key, best_text, best_score = None, None, -1
+for key in range(256):
+    text = bytes(b ^ key for b in CIPHER).decode("latin-1")
+    if printable(text) and score(text) &gt; best_score:
+        best_key, best_text, best_score = key, text, score(text)
+
+print(hex(best_key), best_text)</code></pre></div>
+  <p>Expected: <span class="mono">0x67 Finally, someone let me out of my cage</span></p>
+  </div></details>
+  <div class="tick"><input type="checkbox" id="t_l6" data-tick><label for="t_l6">Lesson 6 done</label></div>
+</div>
+
+<!-- ============================================================ -->
+<h2 id="project">4. Mini project: Vault Guard</h2>
+
+<div class="card key">
+  <p><b>What you build:</b> a tiny secured file vault in Python 3 (standard library only, about 100 lines). Users log in, a single gate decides every access, and every decision lands in a tamper-evident audit log.</p>
+  <p><b>Why:</b> it turns this week's words (authentication, authorisation, DAC, RBAC, reference monitor, NEAT, accountability) into code you can attack.</p>
+</div>
+
+<h3>Concept map</h3>
+<div class="tablewrap"><table>
+  <tr><th>Project feature</th><th>Week 1 concept</th></tr>
+  <tr><td>Salted PBKDF2 password storage</td><td>Authentication by knowledge; the LinkedIn breach</td></tr>
+  <tr><td>ACM dict {(subject, object): privileges}</td><td>Access Control Matrix, DAC, protection state (S, O, M)</td></tr>
+  <tr><td>UA and PA tables, composed in allowed()</td><td>RBAC: UA &#8900; PA</td></tr>
+  <tr><td>Default deny</td><td>Authorisation relative to a security policy</td></tr>
+  <tr><td>request() as the only gate, always logging</td><td>Reference Monitor: Non-bypassable, Always Invoked</td></tr>
+  <tr><td>Hash-chained log, verify_log()</td><td>Accountability, audit trail, Tamper-proof, Evaluable</td></tr>
+  <tr><td>Attack tests in selftest()</td><td>Integrity, confidentiality, availability (SGT Problem 4)</td></tr>
+  <tr><td>XOR obfuscation then breaking it</td><td>Lab 01, and why 256 keys is not secrecy</td></tr>
+</table></div>
+
+<h3>Milestones</h3>
+<div class="card">
+  <div class="tick"><input type="checkbox" id="t_m1" data-tick><label for="t_m1"><b>M1 Identify and authenticate.</b> <code>register</code> stores a random salt and a PBKDF2 hash. <code>authenticate</code> compares with <code>hmac.compare_digest</code>.</label></div>
+  <div class="tick"><input type="checkbox" id="t_m2" data-tick><label for="t_m2"><b>M2 Authorise.</b> <code>allowed</code> checks the DAC matrix first, then the RBAC route. Deny by default. <code>grant</code> works only for the owner.</label></div>
+  <div class="tick"><input type="checkbox" id="t_m3" data-tick><label for="t_m3"><b>M3 Reference monitor.</b> <code>request</code> authenticates, authorises and always logs. <code>read</code> and <code>write</code> go only through it.</label></div>
+  <div class="tick"><input type="checkbox" id="t_m4" data-tick><label for="t_m4"><b>M4 Accountability.</b> <code>log</code> chains each entry to the previous hash. <code>verify_log</code> recomputes the chain.</label></div>
+  <div class="tick"><input type="checkbox" id="t_m5" data-tick><label for="t_m5"><b>M5 Attack day.</b> Run <code>selftest()</code> until every assert passes, then do the extra attacks below.</label></div>
+</div>
+
+<h3>Your starter file (save as vault.py)</h3>
+<div class="codewrap"><button class="copy" type="button">Copy</button><pre><code>"""Vault Guard - Week 1 mini project (YOUR version). Python 3, standard library only."""
+import hashlib
+import hmac
+import json
+import os
+import time
+
+# ---------- Milestone 1: identification + authentication ----------
+USERS = {}  # username -&gt; (salt, password_hash)
+
+def _hash(password, salt):
+    # TODO: return hashlib.pbkdf2_hmac("sha256", password bytes, salt, 200_000)
+    pass
+
+def register(username, password):
+    # TODO: make a random 16-byte salt (os.urandom), store (salt, hash) in USERS
+    pass
+
+def authenticate(username, password):
+    # TODO: unknown user -&gt; False. Else recompute hash with stored salt and
+    #       compare with hmac.compare_digest (constant-time compare)
+    pass
+
+# ---------- Milestone 2: authorisation (DAC matrix + RBAC) ----------
+OBJECTS = {"notes.txt": "draft plot twist", "logs.txt": "server log data"}
+OWNER = {"notes.txt": "ana", "logs.txt": "ben"}
+ACM = {("ana", "notes.txt"): {"read", "write"}}          # DAC: owner-granted
+UA = {"ana": "analyst", "ben": "admin", "dev": "guest"}   # RBAC: subject -&gt; role
+PA = {                                                    # RBAC: role -&gt; (object, privilege)
+    "guest":   {("notes.txt", "read")},
+    "analyst": {("notes.txt", "read"), ("logs.txt", "read")},
+    "admin":   {("logs.txt", "read"), ("logs.txt", "write")},
+}
+
+def allowed(subject, obj, priv):
+    # TODO: True if priv is in ACM[(subject, obj)] OR (obj, priv) is in PA[role of subject]
+    #       Default must be DENY (return False)
+    pass
+
+def grant(owner, subject, obj, priv):
+    # TODO: only OWNER[obj] may add a privilege to ACM. Return True/False.
+    pass
+
+# ---------- Milestone 4: tamper-evident audit log (accountability) ----------
+LOG = []
+GENESIS = "0" * 64
+
+def log(event):
+    # TODO: prev = hash of last entry (or GENESIS)
+    #       new hash = sha256(prev + json.dumps(event, sort_keys=True))
+    #       append {"event": event, "prev": prev, "hash": new_hash}
+    pass
+
+def verify_log():
+    # TODO: walk the chain from GENESIS, recompute every hash. Any mismatch -&gt; False.
+    pass
+
+# ---------- Milestone 3: the reference monitor (single gate) ----------
+def request(username, password, obj, priv):
+    # TODO: 1) authenticate  2) object exists?  3) allowed()?
+    #       ALWAYS log the decision (ALLOW / DENY:auth / DENY:policy ...) - Always Invoked
+    #       return True only on ALLOW
+    pass
+
+def read(username, password, obj):
+    return OBJECTS[obj] if request(username, password, obj, "read") else None
+
+def write(username, password, obj, data):
+    if request(username, password, obj, "write"):
+        OBJECTS[obj] = data
+        return True
+    return False
+
+# ---------- Milestone 5: attack day ----------
+def selftest():
+    register("ana", "correct horse"); register("ben", "battery staple"); register("dev", "hunter2")
+    assert read("ana", "correct horse", "notes.txt") == "draft plot twist"   # allowed
+    assert read("ana", "WRONG", "notes.txt") is None                         # authentication fails
+    assert read("dev", "hunter2", "logs.txt") is None                        # guest cannot read logs
+    assert not write("dev", "hunter2", "notes.txt", "x")                     # guest cannot write
+    assert not grant("dev", "dev", "notes.txt", "write")                     # non-owner cannot edit matrix
+    assert grant("ana", "dev", "notes.txt", "write")                         # owner can
+    assert write("dev", "hunter2", "notes.txt", "dev edit")
+    assert verify_log()                                                      # log intact
+    LOG[1]["event"]["decision"] = "ALLOW"                                    # attacker rewrites history
+    assert not verify_log()                                                  # tampering detected
+    print("All Vault Guard tests passed.")
+
+if __name__ == "__main__":
+    selftest()
+</code></pre></div>
+<p>Run <code>python vault.py</code>. It fails with an AssertionError until the TODOs are filled in. Build milestone by milestone and re-run.</p>
+
+<details><summary>Stuck? Reference solution (try first!)</summary><div>
+<div class="codewrap"><button class="copy" type="button">Copy</button><pre><code>"""Vault Guard - Week 1 mini project (reference solution). Python 3, standard library only."""
+import hashlib
+import hmac
+import json
+import os
+import time
+
+# ---------- Milestone 1: identification + authentication ----------
+USERS = {}  # username -&gt; (salt, password_hash)
+
+def _hash(password, salt):
+    return hashlib.pbkdf2_hmac("sha256", password.encode(), salt, 200_000)
+
+def register(username, password):
+    salt = os.urandom(16)                      # fresh random salt per user
+    USERS[username] = (salt, _hash(password, salt))
+
+def authenticate(username, password):
+    if username not in USERS:
+        return False
+    salt, stored = USERS[username]
+    return hmac.compare_digest(stored, _hash(password, salt))
+
+# ---------- Milestone 2: authorisation (DAC matrix + RBAC) ----------
+OBJECTS = {"notes.txt": "draft plot twist", "logs.txt": "server log data"}
+OWNER = {"notes.txt": "ana", "logs.txt": "ben"}
+ACM = {("ana", "notes.txt"): {"read", "write"}}          # DAC: owner-granted
+UA = {"ana": "analyst", "ben": "admin", "dev": "guest"}   # RBAC: subject -&gt; role
+PA = {                                                    # RBAC: role -&gt; (object, privilege)
+    "guest":   {("notes.txt", "read")},
+    "analyst": {("notes.txt", "read"), ("logs.txt", "read")},
+    "admin":   {("logs.txt", "read"), ("logs.txt", "write")},
+}
+
+def allowed(subject, obj, priv):
+    if priv in ACM.get((subject, obj), set()):            # DAC rule
+        return True
+    role = UA.get(subject)
+    return role is not None and (obj, priv) in PA.get(role, set())   # RBAC rule; default deny
+
+def grant(owner, subject, obj, priv):
+    """Only the owner may change the matrix (DAC)."""
+    if OWNER.get(obj) != owner:
+        return False
+    ACM.setdefault((subject, obj), set()).add(priv)
+    return True
+
+# ---------- Milestone 4: tamper-evident audit log (accountability) ----------
+LOG = []
+GENESIS = "0" * 64
+
+def _entry_hash(prev, event):
+    body = json.dumps(event, sort_keys=True)
+    return hashlib.sha256((prev + body).encode()).hexdigest()
+
+def log(event):
+    prev = LOG[-1]["hash"] if LOG else GENESIS
+    LOG.append({"event": event, "prev": prev, "hash": _entry_hash(prev, event)})
+
+def verify_log():
+    prev = GENESIS
+    for e in LOG:
+        if e["prev"] != prev or e["hash"] != _entry_hash(prev, e["event"]):
+            return False
+        prev = e["hash"]
+    return True
+
+# ---------- Milestone 3: the reference monitor (single gate) ----------
+def request(username, password, obj, priv):
+    if not authenticate(username, password):
+        decision = "DENY:auth"
+    elif obj not in OBJECTS:
+        decision = "DENY:no-such-object"
+    elif allowed(username, obj, priv):
+        decision = "ALLOW"
+    else:
+        decision = "DENY:policy"
+    log({"t": round(time.time(), 2), "who": username, "obj": obj, "priv": priv, "decision": decision})
+    return decision == "ALLOW"
+
+def read(username, password, obj):
+    return OBJECTS[obj] if request(username, password, obj, "read") else None
+
+def write(username, password, obj, data):
+    if request(username, password, obj, "write"):
+        OBJECTS[obj] = data
+        return True
+    return False
+
+# ---------- Milestone 5: attack day ----------
+def selftest():
+    register("ana", "correct horse"); register("ben", "battery staple"); register("dev", "hunter2")
+    assert read("ana", "correct horse", "notes.txt") == "draft plot twist"   # allowed
+    assert read("ana", "WRONG", "notes.txt") is None                         # authentication fails
+    assert read("dev", "hunter2", "logs.txt") is None                        # guest cannot read logs
+    assert not write("dev", "hunter2", "notes.txt", "x")                     # guest cannot write
+    assert not grant("dev", "dev", "notes.txt", "write")                     # non-owner cannot edit matrix
+    assert grant("ana", "dev", "notes.txt", "write")                         # owner can
+    assert write("dev", "hunter2", "notes.txt", "dev edit")
+    assert verify_log()                                                      # log intact
+    LOG[1]["event"]["decision"] = "ALLOW"                                    # attacker rewrites history
+    assert not verify_log()                                                  # tampering detected
+    print("All Vault Guard tests passed.")
+
+if __name__ == "__main__":
+    selftest()
+</code></pre></div>
+<p>This was run and passes its own selftest.</p>
+</div></details>
+
+<h3>Attack day: extra challenges</h3>
+<div class="card">
+  <ol>
+    <li><b>Crash Override (SGT Problem 4).</b> Write a test where a non-owner edits <code>ACM</code> directly, bypassing <code>grant</code>. Does your code stop it? Python cannot truly enforce non-bypassable: anyone who can run code can touch the dicts. Real systems put the Reference Monitor in the OS or hardware (the TCB). Write one sentence on this in your notes.</li>
+    <li><b>Privilege escalation.</b> Add a test where dev rewrites <code>UA["dev"] = "admin"</code>. Which property is violated first, and which follow? (Same as the Medium exercise.)</li>
+    <li><b>Tail truncation.</b> Delete the last entry of <code>LOG</code>. Does <code>verify_log()</code> notice? It will not. Fix idea: keep the latest hash somewhere else (a separate server, as the lecture suggests for audit trails).</li>
+    <li><b>Break your own vault (Lab 01 link).</b> Store values obfuscated with the helpers below, then recover one using the breaker tool in section 2.</li>
+  </ol>
+  <div class="codewrap"><button class="copy" type="button">Copy</button><pre><code>import base64
+
+def obfuscate(text, key=0x42):
+    return base64.b64encode(bytes(b ^ key for b in text.encode())).decode()
+
+def deobfuscate(token, key=0x42):
+    return bytes(b ^ key for b in base64.b64decode(token)).decode()
+
+token = obfuscate("draft plot twist")
+print(token)
+print(deobfuscate(token))</code></pre></div>
+  <p>Hint: convert the base64 token to hex first (<code>base64.b64decode(token).hex()</code>), paste that into tool B, and read off the key.</p>
+  <div class="tick"><input type="checkbox" id="t_atk" data-tick><label for="t_atk">Extra attacks done</label></div>
+</div>
+
+<h3>What Vault Guard does NOT give you</h3>
+<div class="card">
+  <ul>
+    <li><b>Non-repudiation.</b> A hash chain proves order and detects edits, but whoever holds the log can rebuild the whole chain. Non-repudiation needs digital signatures (coming later).</li>
+    <li><b>Confidentiality at rest.</b> XOR obfuscation is not encryption in any useful sense. Real encryption (block ciphers, authenticated encryption) replaces it in later weeks.</li>
+    <li><b>Anonymity.</b> The log names every user. Confidentiality and anonymity are different properties.</li>
+  </ul>
+  <p class="pill">Next week: swap in real primitives wherever this project cheats, and add one new attack test per primitive.</p>
+</div>
+</main>
+
+<script>
+"use strict";
+const $ = function (id) { return document.getElementById(id); };
+const hex2 = function (n) { return n.toString(16).padStart(2, "0"); };
+const bin8 = function (n) { return n.toString(2).padStart(8, "0"); };
+const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+function el(tag, text, cls) {
+  const e = document.createElement(tag);
+  if (text !== undefined) e.textContent = text;
+  if (cls) e.className = cls;
+  return e;
+}
+
+/* ---------- A: XOR step table ---------- */
+function runXor() {
+  const out = $("xOut");
+  out.innerHTML = "";
+  const text = $("xText").value.slice(0, 60);
+  const key = parseInt($("xKey").value.trim(), 16);
+  if (isNaN(key) || key < 0 || key > 255) { out.appendChild(el("p", "Key must be a hex byte from 00 to ff.", "err")); return; }
+  if (text.length === 0) { out.appendChild(el("p", "Type some text first.", "err")); return; }
+  const bytes = Array.from(new TextEncoder().encode(text));
+  const res = bytes.map(function (b) { return b ^ key; });
+
+  const wrap = el("div", undefined, "tablewrap");
+  const t = document.createElement("table");
+  const head = t.insertRow();
+  ["Char", "Dec", "Hex", "Binary", "Key bin", "XOR bin", "XOR hex", "Result"].forEach(function (h) {
+    const th = document.createElement("th"); th.textContent = h; head.appendChild(th);
+  });
+  bytes.forEach(function (b, i) {
+    const r = t.insertRow();
+    const rc = res[i];
+    const vals = [
+      String.fromCharCode(b), String(b), hex2(b), bin8(b), bin8(key), bin8(rc), hex2(rc),
+      (rc >= 32 && rc < 127) ? String.fromCharCode(rc) : "."
+    ];
+    vals.forEach(function (v) { const td = r.insertCell(); td.textContent = v; td.className = "mono"; });
+  });
+  wrap.appendChild(t);
+  out.appendChild(wrap);
+
+  const bin = res.map(function (n) { return String.fromCharCode(n); }).join("");
+  out.appendChild(el("p", "Original hex: " + bytes.map(hex2).join(""), "mono"));
+  out.appendChild(el("p", "XORed hex: " + res.map(hex2).join(""), "mono"));
+  out.appendChild(el("p", "Base64 of XORed bytes: " + btoa(bin), "big mono"));
+
+  if (res.length >= 3) {
+    const bits = res.slice(0, 3).map(bin8).join("");
+    const chunks = [0, 6, 12, 18].map(function (i) { return bits.slice(i, i + 6); });
+    const idx = chunks.map(function (c) { return parseInt(c, 2); });
+    out.appendChild(el("p", "First 3 bytes as 6-bit chunks: " + chunks.join(" ") + " = " + idx.join(", ") + " = " + idx.map(function (i) { return B64[i]; }).join(" "), "mono"));
+  }
+}
+
+/* ---------- B: single-byte XOR breaker ---------- */
+function runBreak() {
+  const out = $("bOut");
+  out.innerHTML = "";
+  const clean = $("bHex").value.replace(/[^0-9a-fA-F]/g, "");
+  if (clean.length === 0 || clean.length % 2 !== 0) { out.appendChild(el("p", "Need an even number of hex digits.", "err")); return; }
+  const bytes = [];
+  for (let i = 0; i < clean.length; i += 2) bytes.push(parseInt(clean.slice(i, i + 2), 16));
+  const cands = [];
+  for (let k = 0; k < 256; k++) {
+    let ok = true, spaces = 0, letters = 0, s = "";
+    for (let i = 0; i < bytes.length; i++) {
+      const c = bytes[i] ^ k;
+      if (c < 32 || c > 126) { ok = false; break; }
+      if (c === 32) spaces++;
+      if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122)) letters++;
+      s += String.fromCharCode(c);
+    }
+    if (ok) cands.push({ k: k, score: spaces * 2 + letters, text: s });
+  }
+  cands.sort(function (a, b) { return b.score - a.score; });
+  out.appendChild(el("p", cands.length + " of 256 keys give fully printable text. Top candidates:", "big"));
+  const wrap = el("div", undefined, "tablewrap");
+  const t = document.createElement("table");
+  const head = t.insertRow();
+  ["Key hex", "Key char", "Score", "Decryption"].forEach(function (h) { const th = document.createElement("th"); th.textContent = h; head.appendChild(th); });
+  cands.slice(0, 6).forEach(function (c, i) {
+    const r = t.insertRow();
+    [hex2(c.k), String.fromCharCode(c.k), String(c.score), c.text].forEach(function (v) { const td = r.insertCell(); td.textContent = v; td.className = "mono"; });
+    if (i === 0) r.style.fontWeight = "bold";
+  });
+  wrap.appendChild(t);
+  out.appendChild(wrap);
+}
+
+/* ---------- C: RBAC composer ---------- */
+function parseLines(s) {
+  return s.split("\n").map(function (l) { return l.trim(); }).filter(function (l) { return l.length > 0; });
+}
+function runCompose() {
+  const out = $("cOut");
+  out.innerHTML = "";
+  const ua = [], pa = {};
+  parseLines($("uaIn").value).forEach(function (l) {
+    const i = l.indexOf(":");
+    if (i > 0) ua.push([l.slice(0, i).trim(), l.slice(i + 1).trim()]);
+  });
+  parseLines($("paIn").value).forEach(function (l) {
+    const i = l.indexOf(":");
+    if (i > 0) pa[l.slice(0, i).trim()] = l.slice(i + 1).split(",").map(function (p) { return p.trim(); }).filter(Boolean);
+  });
+  const pairs = [], missing = [];
+  ua.forEach(function (sr) {
+    const privs = pa[sr[1]];
+    if (!privs) { missing.push(sr[1]); return; }
+    privs.forEach(function (p) { pairs.push([sr[0], p]); });
+  });
+  out.appendChild(el("p", pairs.length + " (Subject, Privilege) pairs:", "big"));
+  const wrap = el("div", undefined, "tablewrap");
+  const t = document.createElement("table");
+  const head = t.insertRow();
+  ["Subject", "Privilege"].forEach(function (h) { const th = document.createElement("th"); th.textContent = h; head.appendChild(th); });
+  pairs.forEach(function (pr) {
+    const r = t.insertRow();
+    pr.forEach(function (v) { const td = r.insertCell(); td.textContent = v; });
+  });
+  wrap.appendChild(t);
+  out.appendChild(wrap);
+  if (missing.length) out.appendChild(el("p", "Roles with no PA entry (no privileges): " + Array.from(new Set(missing)).join(", "), "err"));
+}
+
+/* ---------- D: search space ---------- */
+function sci(b) {
+  const s = b.toString();
+  if (s.length <= 9) return Number(b).toLocaleString("en-GB");
+  return s[0] + "." + s.slice(1, 3) + " x 10^" + (s.length - 1);
+}
+function timeStr(sec) {
+  const units = [["years", 31557600n], ["days", 86400n], ["hours", 3600n], ["minutes", 60n]];
+  if (sec < 1n) return "under 1 second";
+  for (let i = 0; i < units.length; i++) {
+    if (sec >= units[i][1]) return sci(sec / units[i][1]) + " " + units[i][0];
+  }
+  return sci(sec) + " seconds";
+}
+function runSpace() {
+  const out = $("dOut");
+  out.innerHTML = "";
+  const b = Math.floor(Number($("dB").value)), n = Math.floor(Number($("dN").value)), r = Math.floor(Number($("dR").value));
+  if (!(b >= 2) || !(n >= 1) || n > 2000 || !(r >= 1)) { out.appendChild(el("p", "Use choices 2 or more, positions 1 to 2000, rate 1 or more.", "err")); return; }
+  const space = BigInt(b) ** BigInt(n);
+  const avg = space / 2n;
+  const sec = avg / BigInt(r);
+  out.appendChild(el("p", "Search space: " + sci(space) + " possibilities", "big"));
+  out.appendChild(el("p", "Average guesses to succeed: " + sci(avg)));
+  out.appendChild(el("p", "Average time at " + r.toLocaleString("en-GB") + " guesses per second: " + timeStr(sec), "big"));
+}
+
+/* ---------- wiring ---------- */
+$("xGo").addEventListener("click", runXor);
+$("bGo").addEventListener("click", runBreak);
+$("cGo").addEventListener("click", runCompose);
+$("dGo").addEventListener("click", runSpace);
+document.querySelectorAll("[data-pre]").forEach(function (b) {
+  b.addEventListener("click", function () {
+    const p = b.getAttribute("data-pre").split(",");
+    $("dB").value = p[0]; $("dN").value = p[1]; runSpace();
+  });
+});
+["xText", "xKey"].forEach(function (id) { $(id).addEventListener("keydown", function (e) { if (e.key === "Enter") runXor(); }); });
+runXor(); runBreak(); runCompose(); runSpace();
+
+/* copy buttons */
+document.querySelectorAll(".copy").forEach(function (btn) {
+  btn.addEventListener("click", function () {
+    const code = btn.parentNode.querySelector("code").textContent;
+    const done = function () { btn.textContent = "Copied"; setTimeout(function () { btn.textContent = "Copy"; }, 1500); };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(done, function () { btn.textContent = "Select and copy"; });
+    } else { btn.textContent = "Select and copy"; }
+  });
+});
+
+/* progress ticks (saved if the browser allows it) */
+const ticks = Array.from(document.querySelectorAll("[data-tick]"));
+function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+function updateProgress() {
+  const n = ticks.filter(function (t) { return t.checked; }).length;
+  $("progress").textContent = n + " / " + ticks.length + " done";
+}
+ticks.forEach(function (t) {
+  if (store("w1lab_" + t.id) === "1") t.checked = true;
+  t.addEventListener("change", function () { store("w1lab_" + t.id, t.checked ? "1" : "0"); updateProgress(); });
+});
+updateProgress();
+</script>
+</body>
+</html>

@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7CCSMCIS Week 2 Workbook: Exercises, Calculators, Python, Mini Project</title>
+<style>
+:root{--bg:#fbf8f1;--card:#fff;--text:#1c2b33;--muted:#5b6b73;--line:#d9d2c3;--accent:#c8102e;--ok:#1b7f3b;--okbg:#e3f4e8;--bad:#b3261e;--badbg:#fbe5e3;--code:#f1ede2;--hl:#fff3b0}
+@media (prefers-color-scheme: dark){:root{--bg:#161b1e;--card:#20272b;--text:#eef2f4;--muted:#a3b1b8;--line:#37434a;--accent:#ff6b81;--ok:#6fd58c;--okbg:#17301f;--bad:#ff8a80;--badbg:#3a1f1d;--code:#11161a;--hl:#4a4310}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Verdana,"Trebuchet MS",Tahoma,sans-serif;font-size:18px;line-height:1.75;letter-spacing:.02em}
+.wrap{max-width:900px;margin:0 auto;padding:18px 14px 70px}
+h1{font-size:1.3rem;margin:0}h2{font-size:1.15rem;margin:0 0 8px}h3{font-size:1rem;margin:14px 0 6px}
+.sub{color:var(--muted);font-size:.85rem;margin-bottom:12px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px;position:sticky;top:0;background:var(--bg);padding:8px 0;z-index:5}
+nav button{font:inherit;font-size:.85rem;border:2px solid var(--line);background:var(--card);color:var(--text);padding:8px 12px;border-radius:10px;cursor:pointer}
+nav button[aria-pressed="true"]{border-color:var(--accent);font-weight:bold}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border:2px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:16px}
+.tag{display:inline-block;font-size:.72rem;font-weight:bold;text-transform:uppercase;border:2px solid currentColor;border-radius:8px;padding:0 9px;margin-right:6px}
+.Easy{color:#1b7f3b}.Medium{color:#a86400}.Hard{color:#b3261e}
+@media (prefers-color-scheme: dark){.Easy{color:#6fd58c}.Medium{color:#ffc266}.Hard{color:#ff8a80}}
+.task{white-space:pre-wrap;font-size:.95rem}
+label{display:block;font-size:.85rem;color:var(--muted);margin-top:10px}
+input[type=text],textarea,select{width:100%;font:inherit;font-size:.95rem;padding:9px 12px;border:2px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text)}
+textarea{font-family:Consolas,Menlo,monospace;min-height:70px}
+input:focus,textarea:focus,select:focus{outline:3px solid var(--accent);outline-offset:1px}
+.ok{border-color:var(--ok)!important;background:var(--okbg)!important}.no{border-color:var(--bad)!important;background:var(--badbg)!important}
+button.b{font:inherit;font-size:.85rem;padding:8px 16px;border-radius:10px;border:2px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer;margin:10px 8px 0 0}
+button.b.alt{background:transparent;color:var(--text);border-color:var(--line)}
+pre{background:var(--code);border:2px solid var(--line);border-radius:10px;padding:12px;overflow-x:auto;font-family:Consolas,Menlo,monospace;font-size:.8rem;line-height:1.55;letter-spacing:0;white-space:pre}
+.out{font-family:Consolas,Menlo,monospace;font-size:.85rem;letter-spacing:0;white-space:pre-wrap;word-break:break-all;background:var(--code);border-radius:10px;padding:10px;margin-top:10px;min-height:1.5em}
+details{margin-top:10px}summary{cursor:pointer;font-size:.9rem;font-weight:bold}
+table{border-collapse:collapse;font-size:.8rem;font-family:Consolas,Menlo,monospace;letter-spacing:0;width:100%}
+td,th{border:1px solid var(--line);padding:3px 8px;text-align:left}tr.hit td{background:var(--hl)}
+.scroll{max-height:340px;overflow:auto}
+.msg{font-size:.85rem;margin-top:8px;min-height:1.2em}
+.chk{display:flex;gap:10px;align-items:flex-start;margin:8px 0;font-size:.92rem}.chk input{width:24px;height:24px;margin-top:5px;flex:none}
+.prog{height:10px;background:var(--line);border-radius:6px;overflow:hidden}.prog>div{height:100%;background:var(--accent);width:0;transition:width .3s}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:640px){.grid2{grid-template-columns:1fr}}
+.note{border-left:5px solid var(--accent);padding:4px 12px;background:rgba(127,127,127,.09);border-radius:0 8px 8px 0;font-size:.9rem;margin:10px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Week 2 Workbook: OTP, Perfect Secrecy, IND-CPA</h1>
+<div class="sub">Do one block at a time (10 to 15 minutes). Suggested order: Exercises, Calculators, Python Lessons, IND-CPA Game, Mini Project.</div>
+<nav id="nav"></nav>
+
+<!-- ============ EXERCISES ============ -->
+<section id="s-ex">
+  <div class="card"><h2>Exercise Toolbox (from the notes)</h2>
+  <div class="sub">Work each one on paper first, then type your answers. Green = correct. Solutions are hidden until you want them.</div>
+  <div class="prog"><div id="exprog"></div></div><div class="sub" id="extext"></div></div>
+  <div id="exlist"></div>
+  <div class="card"><h2>Lab 02 Practice (Python)</h2>
+    <div class="note">Do these in Python files. The Python Lessons and Mini Project tabs have the building blocks.</div>
+    <div class="chk"><input type="checkbox" data-k="lab1"><div><b>Lab Module 1:</b> decrypt C1 with the OTP. Gotcha: C1 is UTF-8 text-encoded, while the OTP is raw hex. Check lengths first.</div></div>
+    <div class="chk"><input type="checkbox" data-k="lab2"><div><b>Lab Module 2:</b> write <code>otp_encrypt(message)</code> that uses <code>os.urandom</code> and returns (key, ciphertext). Then decrypt it back.</div></div>
+    <div class="chk"><input type="checkbox" data-k="lab3"><div><b>Lab Module 3:</b> break the two-time pad. P2 is digits separated by spaces, so (C1 xor C2) xor 0x20 leaks every second character of P1. Finish P1, then P2. Macbeth hint.</div></div>
+    <div class="chk"><input type="checkbox" data-k="lab4"><div><b>Discussion:</b> what does "blocking" mean for <code>urandom</code>? What is a faster way to make random bytes (hint: AES in counter mode as a PRG)?</div></div>
+  </div>
+  <div class="card"><h2>SGT Written Problems (do on paper)</h2>
+    <div class="chk"><input type="checkbox" data-k="sgt1"><div>P1-2: write the (KeyGen, Enc, Dec) definition and correctness from memory.</div></div>
+    <div class="chk"><input type="checkbox" data-k="sgt3"><div>P3: key space for (a) 2 messages, 2 ciphertexts; (b) 3 messages, 3 ciphertexts; (c) 4 messages, 3 ciphertexts. Hint for (c): can Enc be injective?</div></div>
+    <div class="chk"><input type="checkbox" data-k="sgt5"><div>P5: why |K| at least |M|, why uniform keys, and prove OTP is IND-CPA secure (use Pr = 2^-N).</div></div>
+    <div class="chk"><input type="checkbox" data-k="sgt8"><div>P8: draw the IND-CPA game with the length check and explain the attack without it.</div></div>
+  </div>
+</section>
+
+<!-- ============ CALCULATORS ============ -->
+<section id="s-calc">
+  <div class="card"><h2>1. XOR Calculator</h2>
+    <div class="grid2"><div><label>A</label><input type="text" id="xa" value="01001000"></div>
+    <div><label>B</label><input type="text" id="xb" value="10110101"></div></div>
+    <label>Input type</label><select id="xm"><option value="bin">Binary bits</option><option value="hex">Hex</option><option value="txt">ASCII text</option></select>
+    <button class="b" id="xgo">Compute A xor B</button>
+    <div class="out" id="xo"></div></div>
+
+  <div class="card"><h2>2. Mod-26 One-Time Pad (letters)</h2>
+    <label>Text (A to Z only)</label><input type="text" id="ma" value="HELP">
+    <label>Key numbers, comma separated, or key letters</label><input type="text" id="mk" value="3,20,8,14">
+    <label>Mode</label><select id="mm"><option value="e">Encrypt: C = P + K mod 26</option><option value="d">Decrypt: P = C - K mod 26</option></select>
+    <button class="b" id="mgo">Compute</button><div class="out" id="mo"></div></div>
+
+  <div class="card"><h2>3. Caesar Brute-Force Plus Frequency Score</h2>
+    <label>Ciphertext</label><input type="text" id="ca" value="EHQ">
+    <button class="b" id="cgo">Try all 26 keys</button>
+    <div class="out" id="co"></div></div>
+
+  <div class="card"><h2>4. Two-Time Pad Crib Dragger</h2>
+    <div class="note">C1 xor C2 = P1 xor P2. Slide a guessed word (crib) along the xor. If the result looks like readable text, you have found part of the other message.</div>
+    <label>C1 (hex)</label><textarea id="t1">f979cc1786</textarea>
+    <label>C2 (hex)</label><textarea id="t2">fa67dd0988</textarea>
+    <label>Crib (guessed word in either message)</label><input type="text" id="tc" value="bravo">
+    <button class="b" id="tgo">Drag crib</button>
+    <button class="b alt" id="tdig">Digits-and-spaces trick</button>
+    <button class="b alt" id="tlab">Load Lab Module 3 data</button>
+    <label>Digits trick: P2 has a space at which positions?</label>
+    <select id="tpar"><option value="1">Odd positions (1,3,5...)</option><option value="0">Even positions (0,2,4...)</option></select>
+    <div class="out scroll" id="to"></div></div>
+
+  <div class="card"><h2>5. Key Space vs Number of Bijections</h2>
+    <div class="grid2"><div><label>Block size N (bits)</label><input type="text" id="kb" value="64"></div>
+    <div><label>Key size K (bits)</label><input type="text" id="kk" value="56"></div></div>
+    <button class="b" id="kgo">Compare</button><button class="b alt" id="kdes">DES</button><button class="b alt" id="kaes">AES-128</button>
+    <div class="out" id="ko"></div>
+    <div class="note">Why it matters: there are (2^N)! possible permutations of N-bit blocks but only 2^K keys, so a block cipher uses a tiny fraction of all bijections.</div></div>
+</section>
+
+<!-- ============ PYTHON LESSONS ============ -->
+<section id="s-py">
+  <div class="card"><h2>Python Lessons for This Week</h2>
+  <div class="sub">For each lesson: read the code, predict the output on paper, then open the answer. Run it in your own Python 3.</div></div>
+  <div id="lessons"></div>
+</section>
+
+<!-- ============ GAME ============ -->
+<section id="s-game">
+  <div class="card"><h2>IND-CPA Game: You Are the Adversary</h2>
+    <div class="note">The challenger flips a hidden bit b and encrypts m_b. You send pairs (m0, m1) of equal length and get ciphertexts back. Guess b. Try both schemes.</div>
+    <label>Scheme</label>
+    <select id="gs"><option value="fresh">Fresh random key per message (OTP)</option><option value="reuse">Same key reused every time (two-time pad)</option></select>
+    <button class="b" id="gnew">New round</button>
+    <div class="grid2"><div><label>m0</label><input type="text" id="gm0" value="AAAA"></div><div><label>m1</label><input type="text" id="gm1" value="BBBB"></div></div>
+    <button class="b" id="gq">Query oracle</button>
+    <div class="out" id="glog">Press "New round" first.</div>
+    <button class="b alt" id="gg0">Guess b = 0</button><button class="b alt" id="gg1">Guess b = 1</button>
+    <div class="msg" id="gres"></div>
+    <details><summary>Auto-attack: run 2000 rounds with the repeat strategy</summary>
+      <p class="task" style="font-size:.9rem">Strategy: query (x, x) then (x, y). If both ciphertexts are equal, guess 0, otherwise guess 1.</p>
+      <button class="b" id="gauto">Run auto-attack</button><div class="out" id="gauto-o"></div></details>
+    <div class="note">Insight: with a fresh key per message the attacker wins about 50 percent (advantage near 0). With a reused key, encryption is deterministic, the attacker wins 100 percent (advantage 1). Advantage = 2 x |Pr[b' = b] - 1/2|.</div>
+  </div>
+</section>
+
+<!-- ============ MINI PROJECT ============ -->
+<section id="s-proj">
+  <div class="card"><h2>Mini Project: CipherLab (Python command-line toolkit)</h2>
+    <p>Build one Python program that ties together Week 1 (classical ciphers, frequency analysis, brute force) and Week 2 (OTP, two-time pad, perfect secrecy, IND-CPA). It doubles as a portfolio piece for security and consulting interviews: you can say you implemented and attacked cryptographic schemes and measured advantage empirically.</p>
+    <div class="note">Assumption: I have only seen Week 2 material. Week 1 is treated as introduction plus classical-cipher ideas, since Lecture 2.1 says the previous week showed encryption types and next week returns to historical ciphers. Adjust milestone 1 if your Week 1 lab differs.</div>
+    <h3>Milestones (tick as you finish)</h3>
+    <div class="prog"><div id="pjprog"></div></div><div class="sub" id="pjtext"></div>
+    <div id="pjlist"></div>
+  </div>
+  <div class="card"><h3>Starter skeleton (write the bodies yourself)</h3><pre id="skel"></pre><button class="b alt" data-copy="skel">Copy</button></div>
+  <div class="card"><h3>Tests to make pass (save as test_cipherlab.py)</h3><pre id="tests"></pre><button class="b alt" data-copy="tests">Copy</button></div>
+  <div class="card"><h3>Reference solution (try first, then peek)</h3>
+    <details><summary>Show full reference code</summary><pre id="ref"></pre><button class="b alt" data-copy="ref">Copy</button></details></div>
+  <div class="card"><h3>Report questions (answer in 2 to 3 sentences each, exam practice)</h3>
+    <div class="task">1. Which Kerckhoffs principle does your Caesar attack violate and why does the attack still work?
+2. Why does your OTP stay secure only if the key is uniform AND single-use?
+3. Using your game, explain why a deterministic scheme can never be IND-CPA secure.
+4. State the formal definition of perfect security and say which of your tools demonstrates it.
+5. Extension: switch the OTP key source to a pseudorandom generator (for example AES in counter mode). Which property do you lose (perfect secrecy) and which do you gain (short key)? This leads straight into computational security.</div></div>
+</section>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const norm = s => s.toLowerCase().replace(/\s+/g,"").replace(/\u2212/g,"-").replace(/\*\*/g,"^");
+
+/* ---------- state (try localStorage, fall back to memory) ---------- */
+const mem = {};
+function save(k,v){ mem[k]=v; try{ localStorage.setItem("w2_"+k, v); }catch(e){} }
+function load(k){ if(k in mem) return mem[k]; try{ return localStorage.getItem("w2_"+k); }catch(e){ return null; } }
+
+/* ---------- tabs ---------- */
+const TABS=[["s-ex","Exercises"],["s-calc","Calculators"],["s-py","Python Lessons"],["s-game","IND-CPA Game"],["s-proj","Mini Project"]];
+function showTab(id){
+  TABS.forEach(t=>$(t[0]).classList.toggle("on",t[0]===id));
+  [...$("nav").children].forEach((b,i)=>b.setAttribute("aria-pressed",String(TABS[i][0]===id)));
+  window.scrollTo(0,0);
+}
+TABS.forEach(t=>{const b=document.createElement("button");b.textContent=t[1];b.onclick=()=>showTab(t[0]);$("nav").appendChild(b);});
+showTab("s-ex");
+
+/* ---------- exercises ---------- */
+function frac(s){ s=norm(s); if(s.includes("/")){const[p,q]=s.split("/");return parseFloat(p)/parseFloat(q);} return parseFloat(s); }
+const EX=[
+{tier:"Easy",title:"Mod-26 OTP plus bitwise XOR",
+ text:"Part A. Encrypt P = HELP with key K = (3, 20, 8, 14) using Ci = Pi + Ki mod 26 (A=0 ... Z=25).\nPart B. ASCII of H is 01001000. XOR it with key byte 10110101, then XOR the result with the same key byte again.",
+ fields:[["Part A ciphertext (4 letters)",v=>norm(v)==="kytd"],["Part B first XOR (8 bits)",v=>norm(v)==="11111101"],["Part B second XOR (8 bits)",v=>norm(v)==="01001000"]],
+ sol:"A: H=7+3=10=K, E=4+20=24=Y, L=11+8=19=T, P=15+14=29 mod 26=3=D, so KYTD.\nB: 01001000 xor 10110101 = 11111101. XOR with 10110101 again returns 01001000. That is the correctness proof Dec(k, Enc(k,m)) = m in action."},
+{tier:"Medium",title:"Two-Time Pad (SGT Problem 7)",
+ text:"c1 = 1111100101111001110011000001011110000110\nc2 = 1111101001100111110111010000100110001000\nSame key. Either (c1=alpha, c2=bravo) or (c1=delta, c2=gamma).\nSplit c1 xor c2 into 8-bit chunks. Compare with the xor of the candidate plaintext pair, chunk by chunk. ASCII: a=01100001, l=01101100, r=01110010, e=01100101.",
+ fields:[["Chunk 2 of c1 xor c2 (01111001 xor 01100111)",v=>norm(v)==="00011110"],["Chunk 2 of 'l' xor 'r' (alpha vs bravo)",v=>norm(v)==="00011110"],["Chunk 2 of 'e' xor 'a' (delta vs gamma)",v=>norm(v)==="00000100"],["Which word is c1's plaintext?",v=>norm(v)==="alpha"]],
+ sol:"c1 xor c2 = 00000011 00011110 00010001 00011110 00001110.\nalpha xor bravo gives exactly the same five chunks. delta xor gamma gives 00000011 00000100 ... so it mismatches at chunk 2 (00000100 is not 00011110). Hence c1=alpha, c2=bravo. Note chunk 1 matches for both pairs, so one chunk is never enough. Use the Crib Dragger to confirm."},
+{tier:"Hard",title:"Perfect security breaks without the zero key (SGT Problem 6)",
+ text:"KeyGen picks k uniformly from {0,1}^L minus {0^L}. Set L = 2.\nPart A. List the allowed keys and build the table Enc(k,m) = k xor m for all m in {00,01,10,11}.\nPart B. Compute Pr[Enc(k,00)=00] and Pr[Enc(k,01)=00].\nPart C. Does perfect security hold?\nPart D. For general L, find Pr[Enc(k,m')=m] for m' different from m.",
+ fields:[["Number of allowed keys for L = 2",v=>norm(v)==="3"],["Pr[Enc(k,00) = 00]",v=>norm(v)==="0"||norm(v)==="0/3"],["Pr[Enc(k,01) = 00] (fraction or decimal)",v=>Math.abs(frac(v)-1/3)<0.005],["Perfectly secure? (yes or no)",v=>norm(v)==="no"],["General L: Pr[Enc(k,m')=m] for m' != m",v=>["1/(2^l-1)","1/(2^l-1)"].includes(norm(v))||norm(v)==="1/(2^l-1)"]],
+ sol:"Allowed keys: 01, 10, 11 (3 keys). Enc(k,00)=k so it is never 00. Pr[Enc(k,00)=00]=0. Enc(k,01)=00 needs k=01, allowed, so 1/3.\n0 is not equal to 1/3, so the definition Pr[Enc(k,m0)=c] = Pr[Enc(k,m1)=c] fails. Not perfectly secure.\nGeneral L: Pr[Enc(k,m)=m]=0 while Pr[Enc(k,m')=m]=1/(2^L - 1). The attacker learns that c is never the plaintext: an elimination leak. Moral: perfect secrecy needs the key uniform over ALL of {0,1}^L."}
+];
+function renderEx(){
+  const box=$("exlist"); let solved=0;
+  EX.forEach((e,ei)=>{
+    const card=document.createElement("div"); card.className="card";
+    const h=document.createElement("h2"); const tg=document.createElement("span"); tg.className="tag "+e.tier; tg.textContent=e.tier; h.append(tg,document.createTextNode(e.title));
+    const t=document.createElement("div"); t.className="task"; t.textContent=e.text;
+    card.append(h,t);
+    const inputs=[];
+    e.fields.forEach((f,fi)=>{ const l=document.createElement("label"); l.textContent=f[0]; const i=document.createElement("input"); i.type="text"; i.autocomplete="off"; i.spellcheck=false;
+      const key="ex"+ei+"_"+fi; const sv=load(key); if(sv){i.value=sv;} i.oninput=()=>save(key,i.value); inputs.push(i); card.append(l,i); });
+    const btn=document.createElement("button"); btn.className="b"; btn.textContent="Check answers";
+    btn.onclick=()=>{ inputs.forEach((i,fi)=>{ const ok=e.fields[fi][1](i.value); i.classList.toggle("ok",ok); i.classList.toggle("no",!ok); save("exok"+ei+"_"+fi, ok?"1":"0"); }); updateProg(); };
+    const det=document.createElement("details"); const sm=document.createElement("summary"); sm.textContent="Show solution"; const sp=document.createElement("div"); sp.className="task"; sp.style.fontSize=".9rem"; sp.textContent=e.sol; det.append(sm,sp);
+    card.append(btn,det); box.appendChild(card);
+  });
+  document.querySelectorAll("input[data-k]").forEach(c=>{ c.checked=load("chk_"+c.dataset.k)==="1"; c.onchange=()=>save("chk_"+c.dataset.k,c.checked?"1":"0"); });
+  function updateProg(){ let total=0,ok=0; EX.forEach((e,ei)=>e.fields.forEach((f,fi)=>{ total++; if(load("exok"+ei+"_"+fi)==="1") ok++; })); $("exprog").style.width=(ok/total*100)+"%"; $("extext").textContent=ok+" of "+total+" answers correct"; }
+  updateProg();
+}
+renderEx();
+
+/* ---------- bit helpers ---------- */
+function toBits(s,mode){
+  if(mode==="bin") return s.replace(/[^01]/g,"");
+  if(mode==="hex") return s.replace(/[^0-9a-fA-F]/g,"").split("").map(c=>parseInt(c,16).toString(2).padStart(4,"0")).join("");
+  return s.split("").map(c=>(c.charCodeAt(0)&255).toString(2).padStart(8,"0")).join("");
+}
+const group8=b=>b.match(/.{1,8}/g)?.join(" ")||"";
+$("xgo").onclick=()=>{
+  const m=$("xm").value, a=toBits($("xa").value,m), b=toBits($("xb").value,m);
+  if(!a||!b){$("xo").textContent="Enter both values.";return;}
+  if(a.length!==b.length){$("xo").textContent="Lengths differ: "+a.length+" bits vs "+b.length+" bits. XOR needs equal lengths (the OTP key must cover the message).";return;}
+  let r=""; for(let i=0;i<a.length;i++) r+=(a[i]^b[i]);
+  let out="A      : "+group8(a)+"\nB      : "+group8(b)+"\nA xor B: "+group8(r);
+  if(r.length%4===0){ out+="\nHex    : "+r.match(/.{4}/g).map(x=>parseInt(x,2).toString(16)).join(""); }
+  if(r.length%8===0){ const ch=r.match(/.{8}/g).map(x=>parseInt(x,2)); out+="\nASCII  : "+ch.map(c=>c>=32&&c<127?String.fromCharCode(c):".").join(""); }
+  $("xo").textContent=out;
+};
+$("mgo").onclick=()=>{
+  const p=$("ma").value.toUpperCase().replace(/[^A-Z]/g,""); const kr=$("mk").value.trim();
+  let k=/^[0-9,\s-]+$/.test(kr)?kr.split(/[,\s]+/).filter(Boolean).map(Number):kr.toUpperCase().replace(/[^A-Z]/g,"").split("").map(c=>c.charCodeAt(0)-65);
+  if(!p.length){$("mo").textContent="Enter letters A to Z.";return;}
+  if(k.length<p.length){$("mo").textContent="Key has "+k.length+" values but text has "+p.length+" letters. OTP key must be at least as long as the message.";return;}
+  const enc=$("mm").value==="e"; let rows="Letter  Num  Key  Result\n", res="";
+  for(let i=0;i<p.length;i++){ const n=p.charCodeAt(i)-65; const v=((enc?n+k[i]:n-k[i])%26+26)%26; res+=String.fromCharCode(65+v); rows+=p[i]+"       "+String(n).padEnd(5)+String(k[i]).padEnd(5)+v+" ("+String.fromCharCode(65+v)+")\n"; }
+  $("mo").textContent=rows+"\nResult: "+res;
+};
+const ENG={E:12.7,T:9.1,A:8.2,O:7.5,I:7,N:6.7,S:6.3,H:6.1,R:6,D:4.3,L:4,C:2.8,U:2.8,M:2.4,W:2.4,F:2.2,G:2,Y:2,P:1.9,B:1.5,V:1,K:.8,J:.15,X:.15,Q:.1,Z:.07};
+$("cgo").onclick=()=>{
+  const c=$("ca").value.toUpperCase().replace(/[^A-Z]/g,""); if(!c){$("co").textContent="Enter ciphertext letters.";return;}
+  const rows=[]; for(let k=0;k<26;k++){ let s="",sc=0; for(const ch of c){ const v=(ch.charCodeAt(0)-65-k+26)%26; const L=String.fromCharCode(65+v); s+=L; sc+=ENG[L]; } rows.push([k,s,sc/c.length]); }
+  const best=rows.reduce((a,b)=>b[2]>a[2]?b:a);
+  $("co").textContent=rows.map(r=>(r===best?">> ":"   ")+"k="+String(r[0]).padStart(2)+"  "+r[1]+"   score "+r[2].toFixed(2)).join("\n")+"\n\nBest by English letter frequency: k="+best[0]+" gives "+best[1]+" (short texts can fool the score, so read the list).";
+};
+const hexBytes=h=>{h=h.replace(/[^0-9a-fA-F]/g,"");const o=[];for(let i=0;i+1<h.length;i+=2)o.push(parseInt(h.substr(i,2),16));return o;};
+function xorHex(){ const a=hexBytes($("t1").value),b=hexBytes($("t2").value); const n=Math.min(a.length,b.length); return a.slice(0,n).map((v,i)=>v^b[i]); }
+$("tgo").onclick=()=>{
+  const x=xorHex(); const crib=$("tc").value; if(!x.length||!crib){$("to").textContent="Fill both ciphertexts and a crib.";return;}
+  let h="<table><tr><th>pos</th><th>(C1 xor C2) xor crib</th><th>readable?</th></tr>";
+  for(let i=0;i+crib.length<=x.length;i++){ let g="",ok=true; for(let j=0;j<crib.length;j++){ const v=x[i+j]^crib.charCodeAt(j); if(v<32||v>126){ok=false;g+=".";} else g+=String.fromCharCode(v); } const alpha=/^[A-Za-z ,.'!?;:-]+$/.test(g); h+="<tr class='"+(ok&&alpha?"hit":"")+"'><td>"+i+"</td><td>"+g.replace(/&/g,"&amp;").replace(/</g,"&lt;")+"</td><td>"+(ok&&alpha?"likely":"no")+"</td></tr>"; }
+  $("to").innerHTML=h+"</table>";
+};
+$("tdig").onclick=()=>{
+  const x=xorHex(); const par=parseInt($("tpar").value); if(!x.length){$("to").textContent="Fill both ciphertexts.";return;}
+  let s=""; for(let i=0;i<x.length;i++){ if(i%2===par){ const v=x[i]^32; s+=(v>=32&&v<127)?String.fromCharCode(v):"."; } else s+="?"; }
+  $("to").textContent="P1 characters at the chosen positions (others unknown):\n"+s+"\n\nTry both parities. Use the readable letters to guess the words, then recover the key bytes there and decrypt the rest.";
+};
+$("tlab").onclick=()=>{
+  $("t1").value="542055804aac960f97963f3a649e48335df8631c4a7a6b4500a5c7ec8573ea89970b296b50b491ca0d0ae14e6e0bd7f9d06a5db3e405bd53c1960bcd810b278b4acf12a1205c59263d";
+  $("t2").value="2f7442c908accf0fd1d76b7f75ca1f7f0bf839455e3b304550e19ea3c57fffcfd047766b0af28299545fbf0a7c4a81bdc72c1ce1aa05ff1a95d8578bca427fcc5c814ff57c150e6124";
+  $("to").textContent="Lab Module 3 data loaded. Press the digits-and-spaces trick, then crib-drag words you recognise from Macbeth.";
+};
+function runK(){
+  const N=parseInt($("kb").value), K=parseInt($("kk").value); if(!(N>0&&K>0&&N<=256)){$("ko").textContent="Use N between 1 and 256 and K above 0.";return;}
+  const count=Math.pow(2,N); const l10keys=K*Math.log10(2);
+  let l10bij; if(N<=20){ let f=0; for(let i=2;i<=count;i++) f+=Math.log10(i); l10bij=f; } else { l10bij=count*Math.log10(count/Math.E)+0.5*Math.log10(2*Math.PI*count); }
+  const fmt=v=>v<15?v.toFixed(2):(v>1e6?v.toExponential(3):v.toFixed(1));
+  $("ko").textContent="Number of keys 2^"+K+" is about 10^"+l10keys.toFixed(2)+"\nBlock inputs 2^"+N+" = "+(N<=52?count.toLocaleString("en-GB"):"about "+count.toExponential(3))+"\nNumber of bijections (2^"+N+")! is about 10^"+fmt(l10bij)+"\n\nOnly a vanishingly small fraction of all permutations is reachable by keys. Slide 28-29: (2^L)! is much greater than 2^K.";
+}
+$("kgo").onclick=runK; $("kdes").onclick=()=>{$("kb").value=64;$("kk").value=56;runK();}; $("kaes").onclick=()=>{$("kb").value=128;$("kk").value=128;runK();};
+
+/* ---------- Python lessons ---------- */
+const LESSONS=[
+{t:"Lesson 1: Text, bytes, hex, bits",code:String.raw`msg = "Hi"
+b = msg.encode()                 # text -> bytes
+print(list(b))                   # numeric values
+print(b.hex())                   # hex string
+print(format(b[0], '08b'))       # 8-bit binary of first byte
+print(bytes.fromhex('4869').decode())`,out:"[72, 105]\n4869\n01001000\nHi"},
+{t:"Lesson 2: XOR and its laws",code:String.raw`x = 0b1010
+y = 0b0110
+print(format(x ^ y, '04b'))      # xor
+print(x ^ x, x ^ 0)              # identity laws
+print((x ^ y) ^ y == x)          # xor twice undoes it`,out:"1100\n0 10\nTrue"},
+{t:"Lesson 3: Modular arithmetic for Caesar and mod-26 OTP",code:String.raw`print((7 + 3) % 26, (15 + 14) % 26, (2 - 5) % 26)
+
+def shift(ch, k):
+    return chr((ord(ch) - 65 + k) % 26 + 65)
+
+print(shift('Y', 3))             # wraps around the alphabet`,out:"10 3 23\nB"},
+{t:"Lesson 4: A real OTP with random bytes",code:String.raw`import os
+
+def xor_bytes(a, b):
+    if len(a) != len(b):
+        raise ValueError("length mismatch")
+    return bytes(x ^ y for x, y in zip(a, b))
+
+m = b"HELLO"
+k = os.urandom(len(m))           # fresh uniform key, same length
+c = xor_bytes(k, m)
+print(len(k) == len(m))
+print(xor_bytes(k, c))           # decrypt = xor again
+print(c == m)                    # almost never True`,out:"True\nb'HELLO'\nFalse   (the ciphertext differs from m with overwhelming probability)\nThe key and ciphertext differ on every run."},
+{t:"Lesson 5: Why a reused key is fatal",code:String.raw`import os
+
+def xor_bytes(a, b):
+    return bytes(x ^ y for x, y in zip(a, b))
+
+p1, p2 = b"alpha", b"bravo"
+k = os.urandom(5)                # SAME key used twice (the mistake)
+c1, c2 = xor_bytes(k, p1), xor_bytes(k, p2)
+
+print(xor_bytes(c1, c2) == xor_bytes(p1, p2))   # the key cancels out
+# Crib drag: xor the crib into (c1 xor c2) to expose the other message
+print(xor_bytes(xor_bytes(c1, c2), b"bravo"))`,out:"True\nb'alpha'"},
+{t:"Lesson 6: The lab encoding gotcha (Module 1)",code:String.raw`# C1 in Lab 02 is hex of UTF-8 TEXT: each character code is one cipher byte.
+# The OTP is hex of RAW bytes. Convert them differently!
+def utf8_hex_to_bytes(h):
+    text = bytes.fromhex(h).decode("utf-8")
+    return bytes(ord(ch) for ch in text)
+
+print(utf8_hex_to_bytes("c29844"))           # two characters: U+0098 and D
+print(bytes.fromhex("c825e6"))               # raw bytes
+# Then: plaintext = xor_bytes(otp[:len(c)], c)  (check lengths first)`,out:"b'\\x98D'\nb'\\xc8%\\xe6'"},
+{t:"Lesson 7: Measuring advantage by simulation",code:String.raw`import random
+
+wins = 0
+trials = 10000
+for _ in range(trials):
+    b = random.randint(0, 1)
+    guess = random.randint(0, 1)   # an adversary with no information
+    wins += (guess == b)
+
+p = wins / trials
+print(round(p, 2))                 # close to 0.5
+print(round(2 * abs(p - 0.5), 2))  # advantage, close to 0`,out:"about 0.5\nabout 0.0 (small random noise, for example 0.01)"}
+];
+(function(){
+  const box=$("lessons");
+  LESSONS.forEach(L=>{
+    const c=document.createElement("div"); c.className="card";
+    const h=document.createElement("h2"); h.textContent=L.t;
+    const pre=document.createElement("pre"); pre.textContent=L.code; pre.id="les"+LESSONS.indexOf(L);
+    const cp=document.createElement("button"); cp.className="b alt"; cp.textContent="Copy code"; cp.dataset.copy=pre.id;
+    const d=document.createElement("details"); const s=document.createElement("summary"); s.textContent="Predict the output on paper, then open"; const o=document.createElement("div"); o.className="out"; o.textContent=L.out; d.append(s,o);
+    c.append(h,pre,cp,d); box.appendChild(c);
+  });
+})();
+
+/* ---------- IND-CPA game ---------- */
+let G=null;
+const rnd=n=>{const a=new Uint8Array(n);crypto.getRandomValues(a);return a;};
+const hx=a=>[...a].map(v=>v.toString(16).padStart(2,"0")).join("");
+function encG(m){ const bytes=new Uint8Array([...m].map(c=>c.charCodeAt(0)&255)); const key=G.scheme==="fresh"?rnd(bytes.length):G.key.slice(0,bytes.length); return bytes.map((v,i)=>v^key[i]); }
+function newRound(){ const s=$("gs").value; G={scheme:s,b:Math.random()<.5?1:0,key:rnd(64),q:0,done:false,log:[]}; $("glog").textContent="New round. Scheme: "+(s==="fresh"?"fresh key each time":"reused key")+". Send some queries."; $("gres").textContent=""; }
+$("gnew").onclick=newRound; $("gs").onchange=newRound;
+$("gq").onclick=()=>{
+  if(!G||G.done){newRound();}
+  const m0=$("gm0").value,m1=$("gm1").value;
+  if(m0.length!==m1.length||!m0.length||m0.length>64){$("glog").textContent+="\nRejected: |m0| must equal |m1| (1 to 64 chars). This is the length check from slide 39.";return;}
+  G.q++; const c=encG(G.b?m1:m0); G.log.push("Query "+G.q+": ("+m0+", "+m1+")  ->  "+hx(c)); $("glog").textContent=G.log.join("\n");
+};
+function guess(g){ if(!G||G.done){return;} G.done=true; const win=g===G.b; $("gres").textContent=(win?"You win. ":"You lose. ")+"The hidden bit was b = "+G.b+". Press New round to play again."; }
+$("gg0").onclick=()=>guess(0); $("gg1").onclick=()=>guess(1);
+$("gauto").onclick=()=>{
+  const s=$("gs").value; let wins=0,T=2000;
+  for(let t=0;t<T;t++){ G={scheme:s,b:Math.random()<.5?1:0,key:rnd(64),q:0,done:true,log:[]}; const x="AAAA",y="BBBB"; const c1=hx(encG(x)); const c2=hx(encG(G.b?y:x)); const g=c1===c2?0:1; if(g===G.b) wins++; }
+  const p=wins/T; $("gauto-o").textContent="Scheme: "+(s==="fresh"?"fresh key":"reused key")+"\nWin rate: "+(p*100).toFixed(1)+"%\nAdvantage = 2 x |p - 1/2| = "+(2*Math.abs(p-.5)).toFixed(3);
+  G=null;
+};
+
+/* ---------- mini project ---------- */
+const MILES=[
+ "M1 Caesar: caesar_enc, caesar_dec, caesar_brute (all 26 keys), caesar_freq_attack (assume most common letter is E).",
+ "M2 Helpers: xor_bytes with a length check, plus hex/bytes conversion. Test: xor twice returns the original.",
+ "M3 OTP: otp_keygen using os.urandom, otp_enc and otp_dec. Refuse a key shorter than the message.",
+ "M4 Two-time pad: crib_drag(c1, c2, crib). Recover alpha and bravo from SGT Problem 7.",
+ "M5 Lab attack: digits_space_attack for Lab Module 3, then finish P1 and P2 by hand.",
+ "M6 IND-CPA game: FreshKeyScheme, ReusedKeyScheme, ind_cpa_once with the length check, adv_repeat and an advantage() estimator.",
+ "M7 Menu: a command-line menu that calls everything. Print the empirical advantage for both schemes.",
+ "M8 Report: answer the five report questions and commit the project to GitHub with a README."
+];
+(function(){
+  const box=$("pjlist");
+  MILES.forEach((m,i)=>{ const d=document.createElement("div"); d.className="chk"; const c=document.createElement("input"); c.type="checkbox"; c.checked=load("pj"+i)==="1"; c.onchange=()=>{save("pj"+i,c.checked?"1":"0");upd();}; const t=document.createElement("div"); t.textContent=m; d.append(c,t); box.appendChild(d); });
+  function upd(){ let n=0; MILES.forEach((m,i)=>{ if(load("pj"+i)==="1") n++; }); $("pjprog").style.width=(n/MILES.length*100)+"%"; $("pjtext").textContent=n+" of "+MILES.length+" milestones done"; }
+  upd();
+})();
+
+const SKEL=String.raw`# cipherlab.py  (fill in every TODO)
+import os, string, random
+from collections import Counter
+
+def xor_bytes(a: bytes, b: bytes) -> bytes:
+    """XOR two equal-length byte strings. Raise ValueError if lengths differ."""
+    pass  # TODO
+
+def caesar_enc(pt: str, k: int) -> str:
+    """Shift each letter forward by k (A-Z only, uppercase output)."""
+    pass  # TODO
+
+def caesar_dec(ct: str, k: int) -> str:
+    pass  # TODO (hint: reuse caesar_enc)
+
+def caesar_brute(ct: str):
+    """Return a list of (k, candidate_plaintext) for k in 0..25."""
+    pass  # TODO
+
+def caesar_freq_attack(ct: str):
+    """Assume the most common ciphertext letter is E. Return (k, plaintext)."""
+    pass  # TODO
+
+def otp_keygen(n: int) -> bytes:
+    pass  # TODO (os.urandom)
+
+def otp_enc(k: bytes, m: bytes) -> bytes:
+    """Raise ValueError if the key is shorter than the message."""
+    pass  # TODO
+
+def otp_dec(k: bytes, c: bytes) -> bytes:
+    pass  # TODO
+
+def crib_drag(c1: bytes, c2: bytes, crib: str):
+    """Yield (position, guess, printable) for each position of crib in c1 xor c2."""
+    pass  # TODO
+
+def digits_space_attack(c1: bytes, c2: bytes, space_parity: int = 1) -> str:
+    """P2 has a space at positions i with i % 2 == space_parity.
+    There, (c1 xor c2) xor 0x20 equals P1[i]. Use '?' for unknown positions."""
+    pass  # TODO
+
+class FreshKeyScheme:      # new random key for every encryption
+    def enc(self, m: bytes) -> bytes: pass  # TODO
+
+class ReusedKeyScheme:     # one key for every encryption (the mistake)
+    def __init__(self): pass  # TODO
+    def enc(self, m: bytes) -> bytes: pass  # TODO
+
+def ind_cpa_once(scheme, adversary) -> bool:
+    """Flip b, give adversary an oracle(m0, m1) that checks len(m0)==len(m1)
+    and returns scheme.enc(m_b). Return True if the adversary's guess equals b."""
+    pass  # TODO
+
+def adv_repeat(oracle) -> int:
+    """Query (x, x) then (x, y). Same ciphertext -> guess 0, else guess 1."""
+    pass  # TODO
+
+def advantage(scheme_cls, adversary, trials=2000):
+    """Return (win_rate, 2*abs(win_rate - 0.5))."""
+    pass  # TODO
+`;
+const TESTS=String.raw`# test_cipherlab.py  -> run: python test_cipherlab.py
+from cipherlab import *
+
+def b2(s): return bytes(int(s[i:i+8], 2) for i in range(0, len(s), 8))
+
+assert caesar_enc("YES", 3) == "BHV"
+assert caesar_dec("EHQ", 3) == "BEN"
+assert dict(caesar_brute("EHQ"))[3] == "BEN"
+k, pt = caesar_freq_attack(caesar_enc("MEETMEATTHEEASTENTRANCEEVERYEVENING", 7))
+assert k == 7
+
+assert xor_bytes(xor_bytes(b"AB", b"CD"), b"CD") == b"AB"
+key = otp_keygen(5)
+assert otp_dec(key, otp_enc(key, b"HELLO")) == b"HELLO"
+try:
+    otp_enc(b"ab", b"hello"); raise SystemExit("short key was accepted")
+except ValueError:
+    pass
+
+c1 = b2("1111100101111001110011000001011110000110")
+c2 = b2("1111101001100111110111010000100110001000")
+assert next(crib_drag(c1, c2, "bravo"))[1] == "alpha"
+assert next(crib_drag(c1, c2, "alpha"))[1] == "bravo"
+
+p_fresh, adv_fresh = advantage(FreshKeyScheme, adv_repeat)
+p_reuse, adv_reuse = advantage(ReusedKeyScheme, adv_repeat)
+assert adv_fresh < 0.1       # about 0: fresh key looks random
+assert adv_reuse > 0.99      # about 1: deterministic scheme is broken
+print("All tests passed.")
+`;
+const REF=String.raw`# cipherlab.py reference solution
+import os, string, random
+from collections import Counter
+
+# ---- helpers ----
+def xor_bytes(a: bytes, b: bytes) -> bytes:
+    if len(a) != len(b):
+        raise ValueError("length mismatch")
+    return bytes(x ^ y for x, y in zip(a, b))
+
+def utf8_hex_to_bytes(h: str) -> bytes:
+    """Lab 02 Module 1: C1 is hex of UTF-8 text. OTP is plain bytes.fromhex(...)."""
+    text = bytes.fromhex(h.replace("\n", "").replace(" ", "")).decode("utf-8")
+    return bytes(ord(ch) for ch in text)
+
+# ---- classical: Caesar ----
+def caesar_enc(pt: str, k: int) -> str:
+    return "".join(chr((ord(c) - 65 + k) % 26 + 65)
+                   for c in pt.upper() if c in string.ascii_uppercase)
+
+def caesar_dec(ct: str, k: int) -> str:
+    return caesar_enc(ct, -k)
+
+def caesar_brute(ct: str):
+    return [(k, caesar_dec(ct, k)) for k in range(26)]
+
+def caesar_freq_attack(ct: str):
+    most_common = Counter(ct).most_common(1)[0][0]
+    k = (ord(most_common) - ord("E")) % 26
+    return k, caesar_dec(ct, k)
+
+# ---- One-Time Pad ----
+def otp_keygen(n: int) -> bytes:
+    return os.urandom(n)
+
+def otp_enc(k: bytes, m: bytes) -> bytes:
+    if len(k) < len(m):
+        raise ValueError("OTP key must be at least as long as the message")
+    return xor_bytes(k[:len(m)], m)
+
+otp_dec = otp_enc   # XOR is its own inverse
+
+# ---- Two-Time Pad attacks ----
+def crib_drag(c1: bytes, c2: bytes, crib: str):
+    x = xor_bytes(c1, c2)                    # equals P1 xor P2
+    cb = crib.encode()
+    for i in range(len(x) - len(cb) + 1):
+        guess = xor_bytes(x[i:i + len(cb)], cb)
+        yield i, guess.decode("latin-1"), all(32 <= g < 127 for g in guess)
+
+def digits_space_attack(c1: bytes, c2: bytes, space_parity: int = 1) -> str:
+    x = xor_bytes(c1, c2)
+    return "".join(chr(x[i] ^ 0x20) if i % 2 == space_parity else "?"
+                   for i in range(len(x)))
+
+# ---- IND-CPA game ----
+class FreshKeyScheme:
+    def enc(self, m: bytes) -> bytes:
+        return otp_enc(otp_keygen(len(m)), m)
+
+class ReusedKeyScheme:
+    def __init__(self):
+        self.k = otp_keygen(64)
+    def enc(self, m: bytes) -> bytes:
+        return otp_enc(self.k, m)
+
+def ind_cpa_once(scheme, adversary) -> bool:
+    b = random.randint(0, 1)
+    def oracle(m0, m1):
+        if len(m0) != len(m1):
+            raise ValueError("lengths differ")
+        return scheme.enc(m1 if b else m0)
+    return adversary(oracle) == b
+
+def adv_repeat(oracle) -> int:
+    x, y = b"AAAA", b"BBBB"
+    c1 = oracle(x, x)
+    c2 = oracle(x, y)
+    return 0 if c1 == c2 else 1
+
+def advantage(scheme_cls, adversary, trials=2000):
+    wins = sum(ind_cpa_once(scheme_cls(), adversary) for _ in range(trials))
+    p = wins / trials
+    return p, 2 * abs(p - 0.5)
+
+# ---- menu ----
+def menu():
+    while True:
+        print("\n1 Caesar enc/dec  2 Caesar brute  3 Caesar freq attack")
+        print("4 OTP demo  5 Crib drag  6 IND-CPA advantage  0 Quit")
+        ch = input("> ").strip()
+        if ch == "1":
+            t = input("text: "); k = int(input("key 0-25: "))
+            print(caesar_enc(t, k))
+        elif ch == "2":
+            for k, p in caesar_brute(input("ciphertext: ").upper()):
+                print(k, p)
+        elif ch == "3":
+            print(caesar_freq_attack(input("ciphertext: ").upper()))
+        elif ch == "4":
+            m = input("message: ").encode(); k = otp_keygen(len(m)); c = otp_enc(k, m)
+            print("key   ", k.hex()); print("cipher", c.hex()); print("plain ", otp_dec(k, c))
+        elif ch == "5":
+            c1 = bytes.fromhex(input("C1 hex: ")); c2 = bytes.fromhex(input("C2 hex: "))
+            for pos, g, ok in crib_drag(c1, c2, input("crib: ")):
+                if ok: print(pos, g)
+        elif ch == "6":
+            for cls in (FreshKeyScheme, ReusedKeyScheme):
+                p, a = advantage(cls, adv_repeat)
+                print(cls.__name__, "win rate", p, "advantage", round(a, 3))
+        elif ch == "0":
+            break
+
+if __name__ == "__main__":
+    menu()
+`;
+$("skel").textContent=SKEL; $("tests").textContent=TESTS; $("ref").textContent=REF;
+document.addEventListener("click",e=>{
+  const id=e.target.dataset&&e.target.dataset.copy; if(!id) return;
+  const txt=$(id).textContent;
+  const done=()=>{const o=e.target.textContent;e.target.textContent="Copied";setTimeout(()=>e.target.textContent=o,1200);};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(txt).then(done,()=>{});}
+  else{const ta=document.createElement("textarea");ta.value=txt;document.body.appendChild(ta);ta.select();try{document.execCommand("copy");done();}catch(x){}ta.remove();}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>7CCSMCIS Cryptography - Week 1 Recall Quiz</title>
+<style>
+:root {
+  --bg: #e9efed;
+  --card: #f6f9f8;
+  --ink: #1b2730;
+  --muted: #45565f;
+  --line: #aebfba;
+  --accent: #17607a;
+  --accent-ink: #ffffff;
+  --ok: #14603a;
+  --ok-bg: #d6eedf;
+  --bad: #962519;
+  --bad-bg: #f5dbd6;
+  --focus: #b85f00;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #131a1f;
+    --card: #1b252c;
+    --ink: #e7eef1;
+    --muted: #a6b6bf;
+    --line: #35464f;
+    --accent: #72c4df;
+    --accent-ink: #0b1a21;
+    --ok: #86d9a8;
+    --ok-bg: #173728;
+    --bad: #ffa296;
+    --bad-bg: #44211d;
+    --focus: #ffb454;
+  }
+}
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body {
+  margin: 0;
+  padding: 1.25rem 1rem 3rem;
+  color: var(--ink);
+  background: var(--bg);
+  font-family: Verdana, Tahoma, "Trebuchet MS", Arial, sans-serif;
+  font-size: 19px;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  word-spacing: 0.08em;
+  text-align: left;
+}
+main { max-width: 44rem; margin: 0 auto; }
+h1 { font-size: 1.45rem; line-height: 1.3; margin: 0 0 0.25rem; }
+.sub { margin: 0 0 1.25rem; color: var(--muted); font-size: 0.9rem; }
+.tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.tabs button {
+  font: inherit; font-size: 0.9rem; letter-spacing: inherit;
+  padding: 0.4rem 0.9rem; border-radius: 0.5rem;
+  border: 2px solid var(--line); background: var(--card); color: var(--ink);
+  cursor: pointer;
+}
+.tabs button[aria-pressed="true"] {
+  background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: bold;
+}
+button:focus-visible, input:focus-visible, summary:focus-visible {
+  outline: 3px solid var(--focus); outline-offset: 2px;
+}
+.progress { display: flex; justify-content: space-between; font-size: 0.9rem; color: var(--muted); margin-bottom: 0.4rem; }
+.bar { height: 0.6rem; background: var(--line); border-radius: 0.3rem; overflow: hidden; margin-bottom: 1rem; }
+.bar > div { height: 100%; width: 0; background: var(--accent); transition: width 0.25s ease; }
+.card {
+  background: var(--card); border: 2px solid var(--line);
+  border-radius: 0.75rem; padding: 1.25rem 1.25rem 1.5rem;
+}
+.tier { display: inline-block; font-size: 0.85rem; font-weight: bold; padding: 0.05rem 0.7rem; border: 2px solid var(--accent); border-radius: 1rem; color: var(--accent); margin-bottom: 0.6rem; }
+.question { font-size: 1.15rem; font-weight: bold; line-height: 1.65; margin: 0 0 0.6rem; }
+.source {
+  margin: 0 0 1.1rem; padding: 0.45rem 0.7rem;
+  font-size: 0.82rem; color: var(--muted);
+  border-left: 5px solid var(--accent); background: var(--bg);
+  border-radius: 0 0.4rem 0.4rem 0;
+}
+.source b { color: var(--ink); }
+label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.25rem; }
+input[type="text"] {
+  width: 100%; font: inherit; letter-spacing: 0.04em;
+  padding: 0.65rem 0.8rem; border-radius: 0.5rem;
+  border: 2px solid var(--line); background: var(--bg); color: var(--ink);
+}
+input[type="text"]:disabled { opacity: 0.85; }
+.actions { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 0.9rem; }
+.btn {
+  font: inherit; font-size: 0.95rem; letter-spacing: inherit;
+  padding: 0.55rem 1.1rem; border-radius: 0.5rem; cursor: pointer;
+  border: 2px solid var(--accent); background: transparent; color: var(--accent);
+}
+.btn.primary { background: var(--accent); color: var(--accent-ink); font-weight: bold; }
+.hint { margin: 0.7rem 0 0; font-size: 0.9rem; color: var(--muted); min-height: 1.5em; }
+.feedback { margin-top: 1rem; padding: 0.8rem 1rem; border-radius: 0.5rem; border: 2px solid; display: none; }
+.feedback.ok { display: block; background: var(--ok-bg); border-color: var(--ok); color: var(--ok); }
+.feedback.bad { display: block; background: var(--bad-bg); border-color: var(--bad); color: var(--bad); }
+.feedback .verdict { font-weight: bold; margin: 0; }
+.feedback .ans { font-size: 1.3rem; font-weight: bold; letter-spacing: 0.08em; margin: 0.2rem 0; color: var(--ink); }
+.feedback .note { margin: 0.3rem 0 0; font-size: 0.9rem; color: var(--ink); }
+.opts { margin-top: 1.1rem; font-size: 0.85rem; color: var(--muted); }
+.opts label { display: inline; font-size: inherit; }
+.summary h2 { font-size: 1.3rem; margin: 0 0 0.5rem; }
+.score { font-size: 2rem; font-weight: bold; margin: 0.2rem 0 0.6rem; }
+table { border-collapse: collapse; width: 100%; font-size: 0.9rem; margin: 0.6rem 0 1rem; }
+th, td { text-align: left; padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--line); }
+.missed { margin: 0.4rem 0 1rem; padding: 0; list-style: none; }
+.missed li { padding: 0.55rem 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+.missed .ma { font-weight: bold; color: var(--ok); }
+.missed .ms { color: var(--muted); font-size: 0.8rem; }
+@media (prefers-reduced-motion: reduce) { .bar > div { transition: none; } }
+</style>
+</head>
+<body>
+<main>
+  <h1>Week 1 Recall Quiz: Information Security Foundations</h1>
+  <p class="sub">7CCSMCIS Cryptography. Type the missing term. Case, spaces and hyphens are ignored; spelling must be exact.</p>
+
+  <div class="tabs" id="tabs" role="group" aria-label="Choose difficulty tier"></div>
+
+  <div id="quizArea">
+    <div class="progress"><span id="progText"></span><span id="scoreText"></span></div>
+    <div class="bar" aria-hidden="true"><div id="barFill"></div></div>
+
+    <section class="card" id="card" aria-live="polite">
+      <span class="tier" id="tierBadge"></span>
+      <p class="question" id="qText"></p>
+      <p class="source" id="qSource"></p>
+
+      <label for="answer">Your answer</label>
+      <input type="text" id="answer" autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false">
+
+      <div class="actions">
+        <button class="btn primary" id="mainBtn" type="button">Check answer</button>
+        <button class="btn" id="hintBtn" type="button">Hint</button>
+        <button class="btn" id="giveBtn" type="button">Show answer</button>
+      </div>
+      <p class="hint" id="hintText"></p>
+
+      <div class="feedback" id="feedback" role="status">
+        <p class="verdict" id="verdict"></p>
+        <p class="ans" id="correctAns"></p>
+        <p class="note" id="noteText"></p>
+      </div>
+    </section>
+
+    <p class="opts"><input type="checkbox" id="shuffle"> <label for="shuffle">Shuffle question order (applies when you pick a tier)</label></p>
+  </div>
+
+  <section class="card summary" id="summary" hidden></section>
+</main>
+
+<script>
+"use strict";
+
+/* ---------------------------------------------------------------
+   QUESTION BANK - Week 1
+   Each object: id, tier, q (use ______ for the blank), a (display answer),
+   alt (accepted alternatives), source (shown under the question), note.
+---------------------------------------------------------------- */
+const QUESTIONS = [
+  /* ============ EASY ============ */
+  { id: "e01", tier: "Easy",
+    q: "Computer security deals with the prevention and detection of ______ actions by users of a computer system.",
+    a: "unauthorised", alt: ["unauthorized"],
+    source: "Lecture 1.1, Slide 2: Information Security",
+    note: "Authorisation is central to the definition and only makes sense relative to a security policy." },
+  { id: "e02", tier: "Easy",
+    q: "The CIA triad stands for Confidentiality, Integrity and ______.",
+    a: "availability", alt: [],
+    source: "Lecture 1.2, Slide 4: Traditional Security Properties (CIA triad)",
+    note: "Availability means no improper impairment of functionality or service." },
+  { id: "e03", tier: "Easy",
+    q: "The word cryptography comes from the Greek kryptos meaning hidden and graphein meaning ______.",
+    a: "write", alt: [],
+    source: "Lecture 1.1, Slide 14: Scene Setting",
+    note: "Cryptography is the science of secret writing." },
+  { id: "e04", tier: "Easy",
+    q: "The science of hiding messages in other messages or images is called ______.",
+    a: "steganography", alt: [],
+    source: "Lecture 1.1, Slide 18: Clarifying Notation",
+    note: "Steganography hides that a message exists; cryptography hides what it says." },
+  { id: "e05", tier: "Easy",
+    q: "The science of analysing a cryptographic system in order to break or circumvent it is called ______.",
+    a: "cryptanalysis", alt: [],
+    source: "Lecture 1.1, Slide 18: Clarifying Notation",
+    note: "" },
+  { id: "e06", tier: "Easy",
+    q: "In the standard protocol cast of characters, the passive attacker who only listens is called ______.",
+    a: "Eve", alt: [],
+    source: "Lecture 1.1, Slide 24: Agents (Principals)",
+    note: "Eve = eavesdropper (passive). Mallory = malicious (active)." },
+  { id: "e07", tier: "Easy",
+    q: "In the standard protocol cast of characters, the malicious, active attacker is called ______.",
+    a: "Mallory", alt: [],
+    source: "Lecture 1.1, Slide 24: Agents (Principals)",
+    note: "" },
+  { id: "e08", tier: "Easy",
+    q: "The three authentication factors are something you know, something you own, and something you ______ (characteristics).",
+    a: "are", alt: [],
+    source: "Lecture 1.3, Slide 13: Authentication",
+    note: "Knowledge = password/PIN. Ownership = smartcard/keys. Characteristics = fingerprint." },
+  { id: "e09", tier: "Easy",
+    q: "The group within which your actions cannot be distinguished from anyone else's is called the ______ set.",
+    a: "anonymity", alt: [],
+    source: "Lecture 1.2, Slide 11: What is Anonymity?",
+    note: "The larger the set, the better. You cannot be anonymous by yourself." },
+  { id: "e10", tier: "Easy",
+    q: "Integrity means data has not been subject to unauthorised ______.",
+    a: "alteration", alt: ["modification"],
+    source: "Lecture 1.3, Slide 5: Integrity",
+    note: "Integrity can be characterised as the unauthorised writing of data." },
+  { id: "e11", tier: "Easy",
+    q: "Access control = authentication + ______.",
+    a: "authorisation", alt: ["authorization"],
+    source: "Lecture 1.3, Slide 18: Access control section title",
+    note: "" },
+  { id: "e12", tier: "Easy",
+    q: "Lecture 0 takeaway: CRYPTO DOES NOT MEAN ______.",
+    a: "cryptocurrencies", alt: ["cryptocurrency"],
+    source: "Lecture 0, Slide 11: Takeaways",
+    note: "It also does not mean just encryption." },
+
+  /* ============ MEDIUM ============ */
+  { id: "m01", tier: "Medium",
+    q: "Keys to an office door are an example of a ______ access control.",
+    a: "physical", alt: [],
+    source: "Lecture 1.3, Slide 22: Policy Enforcement - Access controls",
+    note: "Smartcards also count as physical controls, despite using cryptographic primitives." },
+  { id: "m02", tier: "Medium",
+    q: "A username and password protecting a database is a ______ access control.",
+    a: "logical", alt: [],
+    source: "Lecture 1.3, Slide 22: Policy Enforcement - Access controls",
+    note: "" },
+  { id: "m03", tier: "Medium",
+    q: "In ______ access control (DAC), the owner of the object decides which subjects have which privileges.",
+    a: "discretionary", alt: [],
+    source: "Lecture 1.3, Slide 30: Discretionary Access Control",
+    note: "Typical implementations: passwords, capabilities, owner/group/other masks, ACLs." },
+  { id: "m04", tier: "Medium",
+    q: "In ______ access control (MAC), system-wide policies define subject access to objects and owners cannot change this.",
+    a: "mandatory", alt: [],
+    source: "Lecture 1.3, Slide 27: Examples of Access Control Models",
+    note: "Example: security clearance for classified information." },
+  { id: "m05", tier: "Medium",
+    q: "Role-Based Access Control decouples subjects and privileges by introducing ______.",
+    a: "roles", alt: ["role"],
+    source: "Lecture 1.3, Slide 28: Role-Based Access Control - Introduction",
+    note: "This is why RBAC scales better than an explicit access control matrix." },
+  { id: "m06", tier: "Medium",
+    q: "The requirement that the actions of an entity can be traced uniquely to that entity is called ______.",
+    a: "accountability", alt: [],
+    source: "Lecture 1.3, Slide 11: Identity and AAA (and Slide 34: Accountability)",
+    note: "" },
+  { id: "m07", tier: "Medium",
+    q: "A stronger form of accountability, where a party cannot later deny some action, is called ______.",
+    a: "non-repudiation", alt: [],
+    source: "Lecture 1.3, Slide 34: Accountability",
+    note: "Accountability = traceable. Non-repudiation = cannot be denied." },
+  { id: "m08", tier: "Medium",
+    q: "Encryption hides the payload, but not the ______ information such as source and destination addresses.",
+    a: "routing", alt: [],
+    source: "Lecture 1.2, Slide 9: Privacy and Anonymity on Public Networks",
+    note: "Even tunnel-mode IPsec/ESP reveals the IP addresses of the IPsec gateways." },
+  { id: "m09", tier: "Medium",
+    q: "In the 2016 LinkedIn breach, the passwords were hashed but LinkedIn did not remember to ______ them.",
+    a: "salt", alt: ["salted"],
+    source: "Lecture 1.1, Slide 6: Information Leak Examples [1]",
+    note: "117 million email addresses and passwords; taken in 2012, offered for sale in May 2016." },
+  { id: "m10", tier: "Medium",
+    q: "Email is, by default, not an end-to-end encrypted message but rather a ______.",
+    a: "postcard", alt: [],
+    source: "Lecture 1.2, Slide 7: Message Confidentiality in Practice",
+    note: "Any eavesdropper can read it along the way." },
+  { id: "m11", tier: "Medium",
+    q: "A ransomware attack that stops researchers using their database most directly impacts the CIA property of ______.",
+    a: "availability", alt: [],
+    source: "Small Group Tutorial 1 (Solutions), Problem 1(a)",
+    note: "Selling the decrypted data afterwards is a confidentiality violation (Problem 1(b))." },
+  { id: "m12", tier: "Medium",
+    q: "The three families of security primitives in the taxonomy are unkeyed, symmetric-key and ______-key.",
+    a: "public", alt: [],
+    source: "Lecture 1.1, Slide 23: Cryptographic Taxonomy (Menezes et al., Handbook of Applied Cryptography, 2001)",
+    note: "" },
+  { id: "m13", tier: "Medium",
+    q: "Lab 01: a message XORed byte-wise with a single character is called a single-byte ______ cipher.",
+    a: "XOR", alt: [],
+    source: "Lab 01: Getting Started, section Single-byte XOR cipher",
+    note: "Only 256 possible keys, so it falls to brute force." },
+
+  /* ============ HARD ============ */
+  { id: "h01", tier: "Hard",
+    q: "Handbook of Applied Cryptography: cryptography is the study of mathematical techniques related to confidentiality, data integrity, entity authentication, and data ______ authentication.",
+    a: "origin", alt: [],
+    source: "Lecture 1.1, Slide 19: Definition (Menezes et al., Handbook of Applied Cryptography)",
+    note: "This definition is much broader than encryption: it covers design and cryptanalysis." },
+  { id: "h02", tier: "Hard",
+    q: "A Reference Monitor must be NEAT: Non-bypassable, Evaluable, Always Invoked, and ______.",
+    a: "Tamper-proof", alt: [],
+    source: "Lecture 1.3, Slide 37: Protection Against Trojan Horses II",
+    note: "The Reference Monitor sits inside the small Trusted Computer Base (TCB)." },
+  { id: "h03", tier: "Hard",
+    q: "A protection state is a triple (S, O, M), where M is the access control ______ M : S x O -> P.",
+    a: "matrix", alt: [],
+    source: "Lecture 1.3, Slide 26: Access Control Matrix Model - Protection State",
+    note: "It is simple but does not scale to millions of subjects and objects." },
+  { id: "h04", tier: "Hard",
+    q: "A program that masquerades as a friendly program but does more than the user intended is a Trojan ______; DAC cannot protect against it.",
+    a: "Horse", alt: [],
+    source: "Lecture 1.3, Slide 31: Trojan Horses",
+    note: "Programs run with the privileges of the subject that invoked them, with no check of intent." },
+  { id: "h05", tier: "Hard",
+    q: "Perfect security: the ciphertext leaks nothing about the plaintext except what was previously known about it from the plaintext ______.",
+    a: "distribution", alt: [],
+    source: "Lecture 1.2, Slide 6: Spoilers for Confidentiality in Symmetric Encryption",
+    note: "Often too strong in practice, so a computational version is formalised later." },
+  { id: "h06", tier: "Hard",
+    q: "To hide your traffic from passive traffic analysis you must carry other people's traffic, which is the idea behind cryptographic ______ nets.",
+    a: "mix", alt: [],
+    source: "Lecture 1.2, Slide 14: Attacks on Anonymity",
+    note: "" },
+  { id: "h07", tier: "Hard",
+    q: "The property that an observer cannot tell whether an action took place at all is ______ (hard to achieve).",
+    a: "unobservability", alt: [],
+    source: "Lecture 1.2, Slide 15: Other Notions of Anonymity",
+    note: "" },
+  { id: "h08", tier: "Hard",
+    q: "The property that an observer cannot relate different actions to a single party is called ______ of actions.",
+    a: "unlinkability", alt: [],
+    source: "Lecture 1.2, Slide 15: Other Notions of Anonymity",
+    note: "" },
+  { id: "h09", tier: "Hard",
+    q: "Crash Override altering the access control matrix without the owner's authorisation violates ______, as well as availability and confidentiality.",
+    a: "integrity", alt: [],
+    source: "Small Group Tutorial 1 (Solutions), Problem 4(d)",
+    note: "The protection state itself was changed without authorisation by the owner (George)." },
+  { id: "h10", tier: "Hard",
+    q: "Machine logs can be tampered with, so log messages can be sent to an append-only file, a separate server, or a physically isolated ______.",
+    a: "printer", alt: [],
+    source: "Lecture 1.3, Slide 34: Accountability",
+    note: "Example violation: an audit trail is tampered with, lost, or cannot show where a breach occurred." },
+  { id: "h11", tier: "Hard",
+    q: "A lecturer reading grades after the staff have gone home violates Always Invoked and which other NEAT property?",
+    a: "Non-bypassable", alt: [],
+    source: "Small Group Tutorial 1 (Solutions), Problem 6(c)",
+    note: "Paying off the staff member violates Tamper-proof and Evaluable (Problem 6(b))." },
+  { id: "h12", tier: "Hard",
+    q: "The 2011 hack of DigiNotar caused misissued digital ______ and the company went bankrupt within the month.",
+    a: "certificates", alt: ["certificate"],
+    source: "Lecture 1.1, Slide 8: Costs of Data Breaches",
+    note: "" }
+];
+
+/* ---------------------------------------------------------------
+   Helpers
+---------------------------------------------------------------- */
+const TIERS = ["All", "Easy", "Medium", "Hard"];
+
+function normalise(s) {
+  return String(s)
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+}
+
+function isCorrect(q, typed) {
+  const t = normalise(typed);
+  if (t === "") return false;
+  const accepted = [q.a].concat(q.alt || []).map(normalise);
+  return accepted.indexOf(t) !== -1;
+}
+
+function shuffleArray(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+const $ = function (id) { return document.getElementById(id); };
+
+/* ---------------------------------------------------------------
+   State
+---------------------------------------------------------------- */
+let currentTier = "All";
+let order = [];       // array of question objects for this run
+let pos = 0;
+let answered = false;
+let hintUsed = false;
+let results = {};     // id -> { ok: boolean, hint: boolean }
+
+/* ---------------------------------------------------------------
+   Tabs
+---------------------------------------------------------------- */
+function buildTabs() {
+  const box = $("tabs");
+  box.innerHTML = "";
+  TIERS.forEach(function (t) {
+    const count = t === "All" ? QUESTIONS.length : QUESTIONS.filter(function (q) { return q.tier === t; }).length;
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = t + " (" + count + ")";
+    b.setAttribute("aria-pressed", String(t === currentTier));
+    b.addEventListener("click", function () { startRun(t, null); });
+    box.appendChild(b);
+  });
+}
+
+/* ---------------------------------------------------------------
+   Run control
+---------------------------------------------------------------- */
+function startRun(tier, onlyIds) {
+  currentTier = tier;
+  let list = QUESTIONS.filter(function (q) { return tier === "All" || q.tier === tier; });
+  if (onlyIds) list = list.filter(function (q) { return onlyIds.indexOf(q.id) !== -1; });
+  if ($("shuffle").checked) list = shuffleArray(list);
+  order = list;
+  pos = 0;
+  results = {};
+  buildTabs();
+  $("summary").hidden = true;
+  $("quizArea").hidden = false;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  if (pos >= order.length) { showSummary(); return; }
+  const q = order[pos];
+  answered = false;
+  hintUsed = false;
+
+  $("tierBadge").textContent = q.tier;
+  $("qText").textContent = q.q;
+  $("qSource").innerHTML = "";
+  const lab = document.createElement("b");
+  lab.textContent = "Source: ";
+  $("qSource").appendChild(lab);
+  $("qSource").appendChild(document.createTextNode(q.source));
+
+  const input = $("answer");
+  input.value = "";
+  input.disabled = false;
+  $("hintText").textContent = "";
+  $("feedback").className = "feedback";
+  $("mainBtn").textContent = "Check answer";
+  $("hintBtn").disabled = false;
+  $("giveBtn").disabled = false;
+  updateProgress();
+  input.focus();
+}
+
+function updateProgress() {
+  const done = Object.keys(results).length;
+  const right = Object.keys(results).filter(function (k) { return results[k].ok; }).length;
+  $("progText").textContent = "Question " + Math.min(pos + 1, order.length) + " of " + order.length;
+  $("scoreText").textContent = "Correct so far: " + right + " / " + done;
+  $("barFill").style.width = (order.length ? (pos / order.length) * 100 : 0) + "%";
+}
+
+function reveal(q, ok, typed, gaveUp) {
+  answered = true;
+  results[q.id] = { ok: ok, hint: hintUsed };
+  $("answer").disabled = true;
+  $("hintBtn").disabled = true;
+  $("giveBtn").disabled = true;
+  $("mainBtn").textContent = pos + 1 >= order.length ? "See results" : "Next question";
+
+  const fb = $("feedback");
+  fb.className = "feedback " + (ok ? "ok" : "bad");
+  if (ok) {
+    $("verdict").textContent = hintUsed ? "Correct (with a hint)." : "Correct.";
+  } else if (gaveUp) {
+    $("verdict").textContent = "Answer revealed. Write it out by hand once:";
+  } else {
+    $("verdict").textContent = "Not quite. You typed: " + typed + ". The answer is:";
+  }
+  $("correctAns").textContent = q.a;
+  $("noteText").textContent = q.note || "";
+  updateProgress();
+  $("mainBtn").focus();
+}
+
+function check() {
+  const q = order[pos];
+  const typed = $("answer").value;
+  if (typed.trim() === "") {
+    $("hintText").textContent = "Type something first, or press Show answer.";
+    $("answer").focus();
+    return;
+  }
+  reveal(q, isCorrect(q, typed), typed.trim(), false);
+}
+
+function giveUp() {
+  reveal(order[pos], false, "", true);
+}
+
+function showHint() {
+  const q = order[pos];
+  hintUsed = true;
+  const len = normalise(q.a).length;
+  $("hintText").textContent = "Starts with \"" + q.a.charAt(0).toUpperCase() + "\" and has " + len + " letters.";
+  $("answer").focus();
+}
+
+function next() {
+  pos += 1;
+  renderQuestion();
+}
+
+/* ---------------------------------------------------------------
+   Summary
+---------------------------------------------------------------- */
+function showSummary() {
+  $("quizArea").hidden = true;
+  const box = $("summary");
+  box.hidden = false;
+  box.innerHTML = "";
+
+  const total = order.length;
+  const right = order.filter(function (q) { return results[q.id] && results[q.id].ok; }).length;
+  const hints = order.filter(function (q) { return results[q.id] && results[q.id].hint; }).length;
+  const missed = order.filter(function (q) { return !(results[q.id] && results[q.id].ok); });
+
+  const h = document.createElement("h2");
+  h.textContent = "Run complete: " + currentTier;
+  box.appendChild(h);
+
+  const sc = document.createElement("p");
+  sc.className = "score";
+  sc.textContent = right + " / " + total;
+  box.appendChild(sc);
+
+  const meta = document.createElement("p");
+  meta.textContent = "Hints used: " + hints + ". Missed: " + missed.length + ".";
+  box.appendChild(meta);
+
+  /* per-tier table */
+  const table = document.createElement("table");
+  table.innerHTML = "<tr><th>Tier</th><th>Correct</th></tr>";
+  ["Easy", "Medium", "Hard"].forEach(function (t) {
+    const inTier = order.filter(function (q) { return q.tier === t; });
+    if (!inTier.length) return;
+    const r = inTier.filter(function (q) { return results[q.id] && results[q.id].ok; }).length;
+    const tr = document.createElement("tr");
+    tr.innerHTML = "<td>" + t + "</td><td>" + r + " / " + inTier.length + "</td>";
+    table.appendChild(tr);
+  });
+  box.appendChild(table);
+
+  if (missed.length) {
+    const mh = document.createElement("p");
+    mh.innerHTML = "<b>Write these out by hand:</b>";
+    box.appendChild(mh);
+    const ul = document.createElement("ul");
+    ul.className = "missed";
+    missed.forEach(function (q) {
+      const li = document.createElement("li");
+      const qd = document.createElement("div");
+      qd.textContent = q.q;
+      const ad = document.createElement("div");
+      ad.className = "ma";
+      ad.textContent = q.a;
+      const sd = document.createElement("div");
+      sd.className = "ms";
+      sd.textContent = "Source: " + q.source;
+      li.appendChild(qd); li.appendChild(ad); li.appendChild(sd);
+      ul.appendChild(li);
+    });
+    box.appendChild(ul);
+  } else {
+    const p = document.createElement("p");
+    p.textContent = "Clean sweep. Try Hard tier with shuffle switched on.";
+    box.appendChild(p);
+  }
+
+  const actions = document.createElement("div");
+  actions.className = "actions";
+  if (missed.length) {
+    const rb = document.createElement("button");
+    rb.type = "button"; rb.className = "btn primary";
+    rb.textContent = "Retry missed (" + missed.length + ")";
+    const ids = missed.map(function (q) { return q.id; });
+    rb.addEventListener("click", function () { startRun(currentTier, ids); });
+    actions.appendChild(rb);
+  }
+  const again = document.createElement("button");
+  again.type = "button"; again.className = "btn";
+  again.textContent = "Restart " + currentTier;
+  again.addEventListener("click", function () { startRun(currentTier, null); });
+  actions.appendChild(again);
+  box.appendChild(actions);
+
+  $("barFill").style.width = "100%";
+  box.scrollIntoView({ behavior: "auto", block: "start" });
+}
+
+/* ---------------------------------------------------------------
+   Wiring
+---------------------------------------------------------------- */
+$("mainBtn").addEventListener("click", function () {
+  if (answered) next(); else check();
+});
+$("hintBtn").addEventListener("click", showHint);
+$("giveBtn").addEventListener("click", giveUp);
+$("answer").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    if (answered) next(); else check();
+  }
+});
+
+startRun("All", null);
+</script>
+</body>
+</html>
